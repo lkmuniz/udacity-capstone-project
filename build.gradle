@@ -24,3 +24,7 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext{
+    timberVersion = '4.7.1'
+}
