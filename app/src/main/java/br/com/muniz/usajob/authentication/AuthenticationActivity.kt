@@ -27,6 +27,10 @@ class AuthenticationActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_authentication)
 
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null)
+            navigateToJobActivity()
+
         binding.authenticationLogin.setOnClickListener {
             launchSignInFlow()
         }
@@ -58,10 +62,7 @@ class AuthenticationActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 // Successfully signed in
                 val user = FirebaseAuth.getInstance().currentUser
-
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
+                navigateToJobActivity()
 
             } else {
                 // Sign in failed. If response is null the user canceled the
@@ -70,5 +71,11 @@ class AuthenticationActivity : AppCompatActivity() {
                 // ...
             }
         }
+    }
+
+    private fun navigateToJobActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }
