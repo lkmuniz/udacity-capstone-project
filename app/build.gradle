@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -14,7 +15,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -45,10 +46,23 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
+    implementation "androidx.multidex:multidex:$multidex_version"
+    implementation 'com.android.support:multidex:1.0.3'
+
     // Timber Log
     implementation "com.jakewharton.timber:timber:$rootProject.ext.timberVersion"
     implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.ext.nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$rootProject.ext.nav_version"
+
+    // Firebase Auth
+    implementation "com.firebaseui:firebase-ui-auth:$rootProject.ext.firebaseAuth_version"
+
+    // Import the Firebase BoM
+    implementation platform("com.google.firebase:firebase-bom:$rootProject.ext.firebaseBoM_version")
+
+    // Add the dependency for the Firebase SDK for Google Analytics
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
