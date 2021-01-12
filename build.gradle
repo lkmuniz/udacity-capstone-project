@@ -34,4 +34,5 @@ ext {
     multidex_version = '2.0.1'
     firebaseAuth_version = '6.4.0'
     firebaseBoM_version = '26.2.0'
+    room_version = '2.2.6'
 }

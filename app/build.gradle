@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'kotlin-android-extensions'
     id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.gms.google-services'
 }
@@ -65,6 +67,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
+    // Room
+    implementation "androidx.room:room-runtime:$rootProject.ext.room_version"
+    implementation "androidx.room:room-ktx:$rootProject.ext.room_version"
+    kapt "androidx.room:room-compiler:$rootProject.ext.room_version"
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
