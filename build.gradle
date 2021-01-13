@@ -35,4 +35,6 @@ ext {
     firebaseAuth_version = '6.4.0'
     firebaseBoM_version = '26.2.0'
     room_version = '2.2.6'
+    retrofit2_version = '2.9.0'
+    archLifecycle_version = '2.2.0'
 }
