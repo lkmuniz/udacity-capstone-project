@@ -12,6 +12,6 @@ interface JobDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(jobs: List<JobEntity>)
 
-    @Query("SELECT * FROM job ORDER BY date(LastModified) DESC")
+    @Query("SELECT * FROM job")
     fun getAllJobs(): Flow<List<JobEntity>>
 }
