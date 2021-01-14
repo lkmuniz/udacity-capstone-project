@@ -12,7 +12,12 @@ fun List<Job>.asDatabaseModel(): List<JobEntity> {
             country = it.country,
             countrySubDivisionCode = it.countrySubDivisionCode,
             longitude = it.longitude,
-            latitude = it.latitude
+            latitude = it.latitude,
+            organizationName = it.organizationName,
+            jobName = it.jobName,
+            jobMinimumRange = it.jobMinimumRange,
+            jobMaximumRange = it.jobMaximumRange,
+            jobRateIntervalCode = it.jobRateIntervalCode
         )
     }
 }
@@ -26,7 +31,12 @@ fun List<JobEntity>.asDomainModel(): List<Job> {
             country = it.country,
             countrySubDivisionCode = it.countrySubDivisionCode,
             longitude = it.longitude,
-            latitude = it.latitude
+            latitude = it.latitude,
+            organizationName = it.organizationName,
+            jobName = it.jobName,
+            jobMinimumRange = it.jobMinimumRange,
+            jobMaximumRange = it.jobMaximumRange,
+            jobRateIntervalCode = it.jobRateIntervalCode
         )
     }
 }

@@ -105,7 +105,12 @@ class JobRepository(private val jobDataBase: JobDatabase) {
                 locationCountry,
                 countrySubDivisionCode,
                 longitude,
-                latitude
+                latitude,
+                organizationName,
+                jobName,
+                jobMinimumRange,
+                jobMaximumRange,
+                jobRateIntervalCode
             )
             jobList.add(job)
         }

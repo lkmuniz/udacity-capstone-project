@@ -13,4 +13,9 @@ data class JobEntity(
     val countrySubDivisionCode: String,
     val longitude: String,
     val latitude: String,
+    val organizationName: String,
+    val jobName: String,
+    val jobMinimumRange: String,
+    val jobMaximumRange: String,
+    val jobRateIntervalCode: String,
 )
