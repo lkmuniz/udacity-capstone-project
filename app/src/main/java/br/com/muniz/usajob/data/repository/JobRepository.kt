@@ -27,7 +27,7 @@ class JobRepository(private val jobDataBase: JobDatabase) {
                 try {
                     val result = Network.jobs.getJobs().await()
                     val resultParsed = parseAsteroidsJsonResult(JSONObject(result))
-
+                    jobDataBase.jobDao.clearTable()
                     jobDataBase.jobDao.insertAll(resultParsed.asDatabaseModel())
                     emit(DataState.Success)
                 } catch (throwable: Throwable) {

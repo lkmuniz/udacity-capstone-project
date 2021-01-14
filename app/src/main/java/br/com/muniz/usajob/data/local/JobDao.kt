@@ -14,4 +14,7 @@ interface JobDao {
 
     @Query("SELECT * FROM job")
     fun getAllJobs(): Flow<List<JobEntity>>
+
+    @Query("DELETE FROM job")
+    fun clearTable()
 }
