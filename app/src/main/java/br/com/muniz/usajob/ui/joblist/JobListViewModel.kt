@@ -2,6 +2,7 @@ package br.com.muniz.usajob.ui.joblist
 
 import android.app.Application
 import androidx.lifecycle.*
+import br.com.muniz.usajob.base.BaseViewModel
 import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.data.local.getDatabase
 import br.com.muniz.usajob.data.remote.Network
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class JobListViewModel(application: Application) : AndroidViewModel(application){
+class JobListViewModel(application: Application) : BaseViewModel(application){
 
     private var _resultJob = MutableLiveData<List<Job>>()
     val resultJob: LiveData<List<Job>> = _resultJob
