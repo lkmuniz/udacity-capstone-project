@@ -51,7 +51,9 @@ class JobRepository(private val jobDataBase: JobDatabase) {
 
             val matchedObjectDescriptorJson = jobJson.getJSONObject("MatchedObjectDescriptor")
 
-            val applyUri = matchedObjectDescriptorJson.getString("ApplyURI").replace("[", "").replace("]","").replace("\\","")
+            val applyUri =
+                matchedObjectDescriptorJson.getString("ApplyURI").replace("[", "").replace("]", "")
+                    .replace("\\", "")
 
             val positionLocationArray = matchedObjectDescriptorJson.getJSONArray("PositionLocation")
 
@@ -68,16 +70,43 @@ class JobRepository(private val jobDataBase: JobDatabase) {
 
             val latitude = positionLocationJSONObject.getString("Latitude")
 
+            val organizationName = matchedObjectDescriptorJson.getString("OrganizationName")
 
-            Timber.d("New job added from JSON: " +
-                    "id: $jobId"+
-                    " applyUri: $applyUri"+
-                    " locationName: $locationName"+
-                    " locationCountry: $locationCountry"+
-                    " longitude: $longitude"+
-                    " latitude: $latitude"
+            val jobCategoryArray = matchedObjectDescriptorJson.getJSONArray("JobCategory")
+            val jobCategoryJSONObject = jobCategoryArray.getJSONObject(0)
+            val jobName = jobCategoryJSONObject.getString("Name")
+
+            val jobPositionRemunerationArray =
+                matchedObjectDescriptorJson.getJSONArray("PositionRemuneration")
+            val jobCPositionRemunerationJSONObject = jobPositionRemunerationArray.getJSONObject(0)
+            val jobMinimumRange = jobCPositionRemunerationJSONObject.getString("MinimumRange")
+            val jobMaximumRange = jobCPositionRemunerationJSONObject.getString("MaximumRange")
+            val jobRateIntervalCode =
+                jobCPositionRemunerationJSONObject.getString("RateIntervalCode")
+
+            Timber.d(
+                "New job added from JSON: " +
+                        "id: $jobId" +
+                        " applyUri: $applyUri" +
+                        " locationName: $locationName" +
+                        " locationCountry: $locationCountry" +
+                        " longitude: $longitude" +
+                        " latitude: $latitude" +
+                        " organizationName: $organizationName" +
+                        " jobName: $jobName" +
+                        " jobMinimumRange: $jobMinimumRange" +
+                        " jobMaximumRange: $jobMaximumRange" +
+                        " jobRateIntervalCode: $jobRateIntervalCode"
             )
-            val job = Job(jobId, applyUri, locationName, locationCountry, countrySubDivisionCode, longitude, latitude)
+            val job = Job(
+                jobId,
+                applyUri,
+                locationName,
+                locationCountry,
+                countrySubDivisionCode,
+                longitude,
+                latitude
+            )
             jobList.add(job)
         }
 
