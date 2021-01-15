@@ -1,25 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <data>
+        <variable
+            name="viewModel"
+            type="br.com.muniz.usajob.ui.joblist.JobListViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:text="Job List"
-            android:textAppearance="?attr/textAppearanceListItem" />
 
+        <ImageView
+            android:id="@+id/jobFragment_image"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:background="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/fragmentJob_getJob"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/jobFragment_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@string/login"/>
-    </LinearLayout>
+            android:layout_height="0dp"
+            android:liveData="@{viewModel.resultJob}"
+            tools:listitem="@layout/job_item"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/jobFragment_image" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -9,7 +9,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import br.com.muniz.usajob.R
 import br.com.muniz.usajob.base.BaseFragment
+import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.databinding.FragmentJobListBinding
+import br.com.muniz.usajob.utils.setup
+import timber.log.Timber
 
 /**
  * A fragment representing a list of Items.
@@ -39,13 +42,23 @@ class JobListFragment : BaseFragment() {
                 R.layout.fragment_job_list, container, false
             )
 
-        _viewModel.resultJob.observe(viewLifecycleOwner, { newJob ->
-            binding.content.text = "Job size: ${newJob.size}"
-        })
+        binding.viewModel = _viewModel
 
-        binding.fragmentJobGetJob.setOnClickListener {  }
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.lifecycleOwner = this
+        setupRecyclerView()
+    }
 
+    private fun setupRecyclerView() {
+        val adapter = JobAdapter {
+            Timber.d("Mylog setupRecyclerView id: ${it.id}")
+        }
+
+//        setup the recycler view using the extension function
+        binding.jobFragmentList.setup(adapter)
+    }
 }
