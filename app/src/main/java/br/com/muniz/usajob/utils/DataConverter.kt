@@ -1,5 +1,8 @@
 package br.com.muniz.usajob.utils
 
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import br.com.muniz.usajob.base.BaseRecyclerViewAdapter
 import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.data.local.JobEntity
 
@@ -38,5 +41,14 @@ fun List<JobEntity>.asDomainModel(): List<Job> {
             jobMaximumRange = it.jobMaximumRange,
             jobRateIntervalCode = it.jobRateIntervalCode
         )
+    }
+}
+
+fun <T> RecyclerView.setup(
+    adapter: BaseRecyclerViewAdapter<T>
+) {
+    this.apply {
+        layoutManager = LinearLayoutManager(this.context)
+        this.adapter = adapter
     }
 }
