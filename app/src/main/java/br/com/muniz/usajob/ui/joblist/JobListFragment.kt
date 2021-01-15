@@ -5,11 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import br.com.muniz.usajob.R
 import br.com.muniz.usajob.base.BaseFragment
-import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.databinding.FragmentJobListBinding
 import br.com.muniz.usajob.utils.setup
 import timber.log.Timber
@@ -21,7 +19,7 @@ class JobListFragment : BaseFragment() {
 
     private lateinit var binding: FragmentJobListBinding
 
-    private val _viewModel: JobListViewModel by lazy {
+    override val _viewModel: JobListViewModel by lazy {
         ViewModelProvider(this,
             JobListViewModel.Factory(
                 requireActivity().application
