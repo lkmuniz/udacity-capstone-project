@@ -37,4 +37,5 @@ ext {
     room_version = '2.2.6'
     retrofit2_version = '2.9.0'
     archLifecycle_version = '2.2.0'
+    work_version = '2.4.0'
 }

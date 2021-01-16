@@ -86,6 +86,9 @@ dependencies {
     implementation "androidx.room:room-ktx:$rootProject.ext.room_version"
     kapt "androidx.room:room-compiler:$rootProject.ext.room_version"
 
+    // Work
+    implementation "android.arch.work:work-runtime-ktx:$rootProject.ext.work_version"
+
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
