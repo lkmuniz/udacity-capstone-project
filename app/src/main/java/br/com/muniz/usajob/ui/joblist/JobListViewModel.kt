@@ -5,22 +5,18 @@ import androidx.lifecycle.*
 import br.com.muniz.usajob.base.BaseViewModel
 import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.data.local.getDatabase
-import br.com.muniz.usajob.data.remote.Network
 import br.com.muniz.usajob.data.repository.JobRepository
 import br.com.muniz.usajob.utils.DataState
 import br.com.muniz.usajob.utils.asDomainModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import timber.log.Timber
+import kotlinx.coroutines.withContext
 
-class JobListViewModel(application: Application) : BaseViewModel(application){
+class JobListViewModel(application: Application) : BaseViewModel(application) {
 
     private var _resultJob = MutableLiveData<List<Job>>()
     val resultJob: LiveData<List<Job>> = _resultJob
-
-    private var _statusLoading = MutableLiveData<Boolean>()
-    val statusLoading: LiveData<Boolean> = _statusLoading
 
     private val jobRepository: JobRepository by lazy {
         val database = getDatabase(getApplication())
@@ -28,31 +24,38 @@ class JobListViewModel(application: Application) : BaseViewModel(application){
     }
 
     init {
+        configViewModel()
+    }
+
+    private fun refreshJobs() {
         viewModelScope.launch {
-            jobRepository.jobLocal.map {
-                it.asDomainModel()
-            }.collect {
-                if(it.isNotEmpty()) {
-                    _resultJob.postValue(it)
-                } else {
-                    refreshJobs()
+            jobRepository.refreshJobs().collect { state ->
+                when (state) {
+                    DataState.Loading -> {
+                        showLoading.value = true
+                    }
+                    DataState.Error -> {
+                        showLoading.value = false
+                    }
+                    DataState.Success -> {
+                        showLoading.value = false
+                    }
                 }
             }
         }
     }
 
-    fun refreshJobs() {
+    fun configViewModel() {
         viewModelScope.launch {
-            jobRepository.refreshJobs().collect { state ->
-                when(state) {
-                    DataState.Loading -> {
-                        _statusLoading.value = true
-                    }
-                    DataState.Error -> {
-                        _statusLoading.value = false
-                    }
-                    DataState.Success -> {
-                        _statusLoading.value = false
+            withContext(Dispatchers.IO) {
+                jobRepository.clearRepository()
+                jobRepository.jobLocal.map {
+                    it.asDomainModel()
+                }.collect {
+                    if (it.isNotEmpty()) {
+                        _resultJob.postValue(it)
+                    } else {
+                        refreshJobs()
                     }
                 }
             }

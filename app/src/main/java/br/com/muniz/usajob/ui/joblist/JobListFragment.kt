@@ -20,7 +20,8 @@ class JobListFragment : BaseFragment() {
     private lateinit var binding: FragmentJobListBinding
 
     override val _viewModel: JobListViewModel by lazy {
-        ViewModelProvider(this,
+        ViewModelProvider(
+            requireActivity(),
             JobListViewModel.Factory(
                 requireActivity().application
             )
@@ -41,6 +42,11 @@ class JobListFragment : BaseFragment() {
             )
 
         binding.viewModel = _viewModel
+
+        binding.refreshLayout.setOnRefreshListener {
+            binding.refreshLayout.isRefreshing = false
+            _viewModel.configViewModel()
+        }
 
         return binding.root
     }
