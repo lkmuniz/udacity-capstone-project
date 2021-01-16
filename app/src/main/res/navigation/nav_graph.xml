@@ -12,6 +12,19 @@
     <fragment
         android:id="@+id/jobListFragment"
         android:name="br.com.muniz.usajob.ui.joblist.JobListFragment"
-        android:label="JobListFragment" />
+        android:label="JobListFragment">
+        <action
+            android:id="@+id/action_jobListFragment_to_jobDetailFragment"
+            app:destination="@id/jobDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/jobDetailFragment"
+        android:name="br.com.muniz.usajob.ui.jobdetail.JobDetailFragment"
+        android:label="JobListFragment">
+        <argument
+            android:name="selectedJob"
+            app:argType="br.com.muniz.usajob.data.Job" />
+    </fragment>
 
 </navigation>

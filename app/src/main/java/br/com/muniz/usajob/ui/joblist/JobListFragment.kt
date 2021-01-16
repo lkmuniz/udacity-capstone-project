@@ -8,9 +8,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import br.com.muniz.usajob.R
 import br.com.muniz.usajob.base.BaseFragment
+import br.com.muniz.usajob.base.NavigationCommand
+import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.databinding.FragmentJobListBinding
 import br.com.muniz.usajob.utils.setup
-import timber.log.Timber
 
 /**
  * A fragment representing a list of Items.
@@ -58,11 +59,20 @@ class JobListFragment : BaseFragment() {
     }
 
     private fun setupRecyclerView() {
-        val adapter = JobAdapter {
-            Timber.d("Mylog setupRecyclerView id: ${it.id}")
+        val adapter = JobAdapter { job ->
+            navigateToAddReminder(job)
         }
 
-//        setup the recycler view using the extension function
+        // setup the recycler view using the extension function
         binding.jobFragmentList.setup(adapter)
+    }
+
+    private fun navigateToAddReminder(job: Job) {
+        //use the navigationCommand live data to navigate between the fragments
+        _viewModel.navigationCommand.postValue(
+            NavigationCommand.To(
+                JobListFragmentDirections.actionJobListFragmentToJobDetailFragment(job)
+            )
+        )
     }
 }
