@@ -1,9 +1,7 @@
 package br.com.muniz.usajob.ui.joblist
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import br.com.muniz.usajob.R
@@ -43,7 +41,7 @@ class JobListFragment : BaseFragment() {
             )
 
         binding.viewModel = _viewModel
-
+        setHasOptionsMenu(true)
         binding.refreshLayout.setOnRefreshListener {
             binding.refreshLayout.isRefreshing = false
             _viewModel.clearAndRefreshDataBase()
@@ -56,6 +54,22 @@ class JobListFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = this
         setupRecyclerView()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_options, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.menu_preference -> {
+            _viewModel.showSnackBar.postValue("Menu Preferences")
+            true
+        }
+        R.id.menu_logout -> {
+            _viewModel.showSnackBar.postValue("Menu Logout")
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     private fun setupRecyclerView() {

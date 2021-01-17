@@ -3,4 +3,6 @@
     <string name="login">Login</string>
 
     <string name="notification_body">We found new jobs. Check out!</string>
+    <string name="preferences">Preferences</string>
+    <string name="logout">Logout</string>
 </resources>
