@@ -5,6 +5,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import br.com.muniz.usajob.data.local.getDatabase
 import br.com.muniz.usajob.data.repository.JobRepository
+import br.com.muniz.usajob.utils.sendNotification
 import retrofit2.HttpException
 
 class RefreshDataWork(appContext: Context, params: WorkerParameters) :
@@ -15,6 +16,7 @@ class RefreshDataWork(appContext: Context, params: WorkerParameters) :
         val repository = JobRepository(database)
         return try {
             repository.refreshJobs()
+            sendNotification(applicationContext)
             Result.success()
         } catch (e: HttpException) {
             Result.retry()
