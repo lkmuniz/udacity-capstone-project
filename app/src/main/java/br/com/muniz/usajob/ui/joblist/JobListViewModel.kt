@@ -2,6 +2,7 @@ package br.com.muniz.usajob.ui.joblist
 
 import android.app.Application
 import androidx.lifecycle.*
+import br.com.muniz.usajob.Constants.BASE_IMAGE_URL
 import br.com.muniz.usajob.base.BaseViewModel
 import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.data.local.getDatabase
@@ -17,6 +18,9 @@ class JobListViewModel(application: Application) : BaseViewModel(application) {
 
     private var _resultJob = MutableLiveData<List<Job>>()
     val resultJob: LiveData<List<Job>> = _resultJob
+
+    private var _imageUrl = MutableLiveData(BASE_IMAGE_URL)
+    val imageUrl: LiveData<String> = _imageUrl
 
     private val jobRepository: JobRepository by lazy {
         val database = getDatabase(getApplication())

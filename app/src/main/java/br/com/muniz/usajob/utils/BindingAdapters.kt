@@ -3,10 +3,12 @@ package br.com.muniz.usajob.utils
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.view.View
+import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import br.com.muniz.usajob.base.BaseRecyclerViewAdapter
+import com.squareup.picasso.Picasso
 import timber.log.Timber
 
 
@@ -68,4 +70,12 @@ object BindingAdapters {
             }
         })
     }
+}
+
+@BindingAdapter("imageUrl")
+fun bindPictureOfDayImage(imageView: ImageView, url: String?) {
+    val picasso = Picasso.get()
+    picasso.setIndicatorsEnabled(true)
+    picasso.load(url)
+        .into(imageView)
 }
