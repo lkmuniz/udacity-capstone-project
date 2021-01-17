@@ -17,8 +17,10 @@ import retrofit2.http.Url
 
 
 interface ApiService {
-
-//    @GET("Search?Page=1&ResultsPerPage=20")
+    @Headers(
+        Constants.HEADER_HOST,
+        Constants.HEADER_USER_AGENT,
+        Constants.HEADER_AUTHORIZATION_KEY)
     @GET("Search?Keyword=Software")
     fun getJobs(): Deferred<String>
 }
