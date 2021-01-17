@@ -46,7 +46,7 @@ class JobListFragment : BaseFragment() {
 
         binding.refreshLayout.setOnRefreshListener {
             binding.refreshLayout.isRefreshing = false
-            _viewModel.configViewModel()
+            _viewModel.clearAndRefreshDataBase()
         }
 
         return binding.root

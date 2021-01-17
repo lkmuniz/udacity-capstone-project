@@ -15,7 +15,7 @@ class RefreshDataWork(appContext: Context, params: WorkerParameters) :
         val database = getDatabase(applicationContext)
         val repository = JobRepository(database)
         return try {
-            repository.refreshJobs()
+            repository.clearAndRefreshDatabase()
             sendNotification(applicationContext)
             Result.success()
         } catch (e: HttpException) {

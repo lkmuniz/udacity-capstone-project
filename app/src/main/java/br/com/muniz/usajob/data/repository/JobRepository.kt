@@ -36,11 +36,16 @@ class JobRepository(private val jobDataBase: JobDatabase) {
         }.flowOn(dispatcher)
     }
 
-    fun clearRepository(){
+    private fun clearRepository(){
         jobDataBase.clearAllTables()
     }
 
-    fun parseAsteroidsJsonResult(jsonResult: JSONObject): List<Job> {
+    suspend fun clearAndRefreshDatabase(){
+        clearRepository()
+        refreshJobs()
+    }
+
+    private fun parseAsteroidsJsonResult(jsonResult: JSONObject): List<Job> {
 
         val jobList = ArrayList<Job>()
 

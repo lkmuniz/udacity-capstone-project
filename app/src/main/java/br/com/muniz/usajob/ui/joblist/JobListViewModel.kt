@@ -48,7 +48,6 @@ class JobListViewModel(application: Application) : BaseViewModel(application) {
     fun configViewModel() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                jobRepository.clearRepository()
                 jobRepository.jobLocal.map {
                     it.asDomainModel()
                 }.collect {
@@ -58,6 +57,14 @@ class JobListViewModel(application: Application) : BaseViewModel(application) {
                         refreshJobs()
                     }
                 }
+            }
+        }
+    }
+
+    fun clearAndRefreshDataBase(){
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                jobRepository.clearAndRefreshDatabase()
             }
         }
     }
