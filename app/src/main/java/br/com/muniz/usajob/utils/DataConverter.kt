@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import br.com.muniz.usajob.base.BaseRecyclerViewAdapter
 import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.data.local.JobEntity
+import br.com.muniz.usajob.data.local.subdivision.Subdivision
+import br.com.muniz.usajob.data.local.subdivision.SubdivisionEntity
 
 fun List<Job>.asDatabaseModel(): List<JobEntity> {
     return map {
@@ -41,6 +43,20 @@ fun List<JobEntity>.asDomainModel(): List<Job> {
             jobMaximumRange = it.jobMaximumRange,
             jobRateIntervalCode = it.jobRateIntervalCode
         )
+    }
+}
+
+fun List<Subdivision>.subdivisionAsDatabaseModel(): List<SubdivisionEntity> {
+    return map {
+        SubdivisionEntity(
+            name = it.name
+        )
+    }
+}
+
+fun List<SubdivisionEntity>.subdivisionAsNameList(): List<String> {
+    return map {
+        it.name
     }
 }
 

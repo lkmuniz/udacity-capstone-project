@@ -2,6 +2,7 @@ package br.com.muniz.usajob.ui.joblist
 
 import android.os.Bundle
 import android.view.*
+import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import br.com.muniz.usajob.R
@@ -47,6 +48,8 @@ class JobListFragment : BaseFragment() {
             _viewModel.clearAndRefreshDataBase()
         }
 
+        setupSubdivisionSpinner()
+
         return binding.root
     }
 
@@ -88,5 +91,18 @@ class JobListFragment : BaseFragment() {
                 JobListFragmentDirections.actionJobListFragmentToJobDetailFragment(job)
             )
         )
+    }
+
+    private fun setupSubdivisionSpinner() {
+        _viewModel.resultSubdivision.observe(viewLifecycleOwner, { countryList ->
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                countryList
+            ).also { adapter ->
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                binding.spinnerSubdivision.adapter = adapter
+            }
+        })
     }
 }

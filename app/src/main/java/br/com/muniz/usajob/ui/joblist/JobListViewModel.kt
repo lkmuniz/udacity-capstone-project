@@ -9,6 +9,7 @@ import br.com.muniz.usajob.data.local.getDatabase
 import br.com.muniz.usajob.data.repository.JobRepository
 import br.com.muniz.usajob.utils.DataState
 import br.com.muniz.usajob.utils.asDomainModel
+import br.com.muniz.usajob.utils.subdivisionAsNameList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -19,6 +20,9 @@ class JobListViewModel(application: Application) : BaseViewModel(application) {
     private var _resultJob = MutableLiveData<List<Job>>()
     val resultJob: LiveData<List<Job>> = _resultJob
 
+    private var _resultSubdivision = MutableLiveData<List<String>>()
+    val resultSubdivision: LiveData<List<String>> = _resultSubdivision
+
     private var _imageUrl = MutableLiveData(BASE_IMAGE_URL)
     val imageUrl: LiveData<String> = _imageUrl
 
@@ -28,6 +32,7 @@ class JobListViewModel(application: Application) : BaseViewModel(application) {
     }
 
     init {
+        getCountries()
         configViewModel()
     }
 
@@ -49,7 +54,25 @@ class JobListViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    fun configViewModel() {
+    private fun refreshSubdivision() {
+        viewModelScope.launch {
+            jobRepository.refreshSubdivision().collect { state ->
+                when (state) {
+                    DataState.Loading -> {
+                        showLoading.value = true
+                    }
+                    DataState.Error -> {
+                        showLoading.value = false
+                    }
+                    DataState.Success -> {
+                        showLoading.value = false
+                    }
+                }
+            }
+        }
+    }
+
+    private fun configViewModel() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 jobRepository.jobLocal.map {
@@ -69,6 +92,22 @@ class JobListViewModel(application: Application) : BaseViewModel(application) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 jobRepository.clearAndRefreshDatabase()
+            }
+        }
+    }
+
+    private fun getCountries() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                jobRepository.subdivisionList.map {
+                    it.subdivisionAsNameList()
+                }.collect {
+                    if (it.isNotEmpty()) {
+                        _resultSubdivision.postValue(it)
+                    } else {
+                        refreshSubdivision()
+                    }
+                }
             }
         }
     }

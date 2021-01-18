@@ -2,9 +2,11 @@ package br.com.muniz.usajob.data.repository
 
 import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.data.local.JobDatabase
+import br.com.muniz.usajob.data.local.subdivision.Subdivision
 import br.com.muniz.usajob.data.remote.Network
 import br.com.muniz.usajob.utils.DataState
 import br.com.muniz.usajob.utils.asDatabaseModel
+import br.com.muniz.usajob.utils.subdivisionAsDatabaseModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +19,8 @@ import timber.log.Timber
 class JobRepository(private val jobDataBase: JobDatabase) {
 
     val jobLocal = jobDataBase.jobDao.getAllJobs()
+
+    val subdivisionList = jobDataBase.subdivisionDao.getAllSubdivision()
 
     suspend fun refreshJobs(
         dispatcher: CoroutineDispatcher = Dispatchers.IO
@@ -36,11 +40,51 @@ class JobRepository(private val jobDataBase: JobDatabase) {
         }.flowOn(dispatcher)
     }
 
-    private fun clearRepository(){
+    suspend fun refreshSubdivision(
+        dispatcher: CoroutineDispatcher = Dispatchers.IO
+    ): Flow<DataState> {
+        return flow {
+            emit(DataState.Loading)
+            withContext(dispatcher) {
+                try {
+                    val result = Network.jobs.getSubdivision().await()
+                    val resultParsed = parseSubdivisionsJsonResult(JSONObject(result))
+                    jobDataBase.subdivisionDao.insertAll(resultParsed.subdivisionAsDatabaseModel())
+                    emit(DataState.Success)
+                } catch (throwable: Throwable) {
+                    emit(DataState.Error)
+                }
+            }
+        }.flowOn(dispatcher)
+    }
+
+    private fun parseSubdivisionsJsonResult(jsonObject: JSONObject): List<Subdivision> {
+        val subdivisionList = ArrayList<Subdivision>()
+
+        val codeListtItems = jsonObject.getJSONArray("CodeList")
+        val searchResultItems = codeListtItems.getJSONObject(0).getJSONArray("ValidValue")
+
+        for (i in 0 until searchResultItems.length()) {
+            val subdivisionJson = searchResultItems.getJSONObject(i)
+            var parentCode = subdivisionJson.getString("ParentCode")
+            if (parentCode == "US") {
+                var subdivisionName = subdivisionJson.getString("Value")
+                if (subdivisionName == "Undefined")
+                    subdivisionName = "Default"
+                val countrySubdivision = Subdivision(subdivisionName)
+                subdivisionList.add(countrySubdivision)
+            }
+
+        }
+
+        return subdivisionList
+    }
+
+    private fun clearRepository() {
         jobDataBase.clearAllTables()
     }
 
-    suspend fun clearAndRefreshDatabase(){
+    suspend fun clearAndRefreshDatabase() {
         clearRepository()
         refreshJobs()
     }
