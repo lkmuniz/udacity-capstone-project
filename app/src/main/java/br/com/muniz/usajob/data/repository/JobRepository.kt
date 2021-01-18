@@ -34,6 +34,7 @@ class JobRepository(private val jobDataBase: JobDatabase) {
                     jobDataBase.jobDao.insertAll(resultParsed.asDatabaseModel())
                     emit(DataState.Success)
                 } catch (throwable: Throwable) {
+                    Timber.e(throwable.message)
                     emit(DataState.Error)
                 }
             }
@@ -52,6 +53,7 @@ class JobRepository(private val jobDataBase: JobDatabase) {
                     jobDataBase.subdivisionDao.insertAll(resultParsed.subdivisionAsDatabaseModel())
                     emit(DataState.Success)
                 } catch (throwable: Throwable) {
+                    Timber.e(throwable.message)
                     emit(DataState.Error)
                 }
             }
@@ -111,16 +113,15 @@ class JobRepository(private val jobDataBase: JobDatabase) {
 
             val positionLocationJSONObject = positionLocationArray.getJSONObject(0)
 
-            val locationName = positionLocationJSONObject.getString("LocationName")
+            val locationName = getStringFromJSON(positionLocationJSONObject, "LocationName")
 
-            val locationCountry = positionLocationJSONObject.getString("CountryCode")
+            val locationCountry =  getStringFromJSON(positionLocationJSONObject, "CountryCode")
 
-            val countrySubDivisionCode =
-                positionLocationJSONObject.getString("CountrySubDivisionCode")
+            val countrySubDivisionCode = getStringFromJSON(positionLocationJSONObject, "CountrySubDivisionCode")
 
-            val longitude = positionLocationJSONObject.getString("Longitude")
+            val longitude =  getStringFromJSON(positionLocationJSONObject, "Longitude")
 
-            val latitude = positionLocationJSONObject.getString("Latitude")
+            val latitude =  getStringFromJSON(positionLocationJSONObject, "Latitude")
 
             val organizationName = matchedObjectDescriptorJson.getString("OrganizationName")
 
@@ -169,6 +170,14 @@ class JobRepository(private val jobDataBase: JobDatabase) {
 
         return jobList
     }
+
+    private fun getStringFromJSON(objectJSONObject: JSONObject, searchString: String): String {
+        if(objectJSONObject.has(searchString))
+           return objectJSONObject.getString(searchString)
+
+        return  ""
+    }
+
 }
 
 
