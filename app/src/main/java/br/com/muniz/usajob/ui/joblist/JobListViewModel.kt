@@ -2,20 +2,21 @@ package br.com.muniz.usajob.ui.joblist
 
 import android.app.Application
 import androidx.lifecycle.*
+import br.com.muniz.usajob.Constants
 import br.com.muniz.usajob.Constants.BASE_IMAGE_URL
 import br.com.muniz.usajob.base.BaseViewModel
 import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.data.local.getDatabase
 import br.com.muniz.usajob.data.repository.JobRepository
-import br.com.muniz.usajob.utils.DataState
-import br.com.muniz.usajob.utils.asDomainModel
-import br.com.muniz.usajob.utils.subdivisionAsNameList
+import br.com.muniz.usajob.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class JobListViewModel(application: Application) : BaseViewModel(application) {
+
+    private var sharedPreferenceHelper = PreferenceHelper(application)
 
     private var _resultJob = MutableLiveData<List<Job>>()
     val resultJob: LiveData<List<Job>> = _resultJob
@@ -32,13 +33,14 @@ class JobListViewModel(application: Application) : BaseViewModel(application) {
     }
 
     init {
-        getCountries()
+        getSubdivisions()
         configViewModel()
     }
 
     private fun refreshJobs() {
         viewModelScope.launch {
-            jobRepository.refreshJobs().collect { state ->
+            val location = getPrefLocation()
+            jobRepository.refreshJobs(location).collect { state ->
                 when (state) {
                     DataState.Loading -> {
                         showLoading.value = true
@@ -73,6 +75,7 @@ class JobListViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun configViewModel() {
+        configDefaultPreference()
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 jobRepository.jobLocal.map {
@@ -88,15 +91,29 @@ class JobListViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    fun clearAndRefreshDataBase(){
+    private fun configDefaultPreference() {
+        sharedPreferenceHelper.setValue(
+            Constants.PAGE_NUMBER_PREF_KEY,
+            Constants.PAGE_NUMBER,
+            TypeValue.STRING
+        )
+        sharedPreferenceHelper.setValue(
+            Constants.RESULT_PER_PAGE_PREF_KEY,
+            Constants.RESULT_PER_PAGE,
+            TypeValue.STRING
+        )
+    }
+
+    fun clearAndRefreshDataBase() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                jobRepository.clearAndRefreshDatabase()
+                jobRepository.clearJobRepository()
+                configViewModel()
             }
         }
     }
 
-    private fun getCountries() {
+    private fun getSubdivisions() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 jobRepository.subdivisionList.map {
@@ -110,6 +127,20 @@ class JobListViewModel(application: Application) : BaseViewModel(application) {
                 }
             }
         }
+    }
+
+    fun saveLocationPreference(value: String?) {
+        sharedPreferenceHelper.setValue(
+            Constants.LOCATION_PREF_KEY,
+            value!!,
+            TypeValue.STRING
+        )
+        clearAndRefreshDataBase()
+    }
+
+    fun getPrefLocation(): String {
+        return sharedPreferenceHelper.getValue(Constants.LOCATION_PREF_KEY, TypeValue.STRING)
+            .toString()
     }
 
     class Factory(private val application: Application) : ViewModelProvider.Factory {

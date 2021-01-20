@@ -2,6 +2,8 @@ package br.com.muniz.usajob.ui.joblist
 
 import android.os.Bundle
 import android.view.*
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -102,7 +104,37 @@ class JobListFragment : BaseFragment() {
             ).also { adapter ->
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 binding.spinnerSubdivision.adapter = adapter
+
+                /**
+                 * Check if the user already selected some location and set on spinner
+                 * */
+                val prefLocation = _viewModel.getPrefLocation()
+                if (prefLocation.isNotEmpty()) {
+                    var pos = _viewModel.resultSubdivision.value?.indexOf(prefLocation)
+                    pos = if (pos == -1) 0 else pos
+                    binding.spinnerSubdivision.setSelection(pos!!)
+                    _viewModel.showSnackBar.value = pos.toString()
+                }
             }
         })
+
+        /**
+         *  When user select the division from spinner, the sharedpreference is updated
+         *  and a new query is made
+         */
+        binding.spinnerSubdivision.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parentView: AdapterView<*>?,
+                selectedItemView: View?,
+                position: Int,
+                id: Long
+            ) {
+                val value = _viewModel.resultSubdivision.value?.get(position)
+                _viewModel.saveLocationPreference(value)
+            }
+
+            override fun onNothingSelected(parentView: AdapterView<*>?) {
+            }
+        }
     }
 }

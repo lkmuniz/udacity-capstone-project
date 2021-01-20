@@ -38,4 +38,6 @@ ext {
     retrofit2_version = '2.9.0'
     archLifecycle_version = '2.2.0'
     work_version = '2.4.0'
+    preference_version = '1.1.1'
+    picasso_version = '2.71828'
 }

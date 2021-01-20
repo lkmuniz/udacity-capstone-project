@@ -1,5 +1,6 @@
 package br.com.muniz.usajob.data.repository
 
+import br.com.muniz.usajob.Constants
 import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.data.local.JobDatabase
 import br.com.muniz.usajob.data.local.subdivision.Subdivision
@@ -23,14 +24,20 @@ class JobRepository(private val jobDataBase: JobDatabase) {
     val subdivisionList = jobDataBase.subdivisionDao.getAllSubdivision()
 
     suspend fun refreshJobs(
+        locationName: String = "",
+        page: String = Constants.PAGE_NUMBER,
+        resultPerPage: String = Constants.RESULT_PER_PAGE,
         dispatcher: CoroutineDispatcher = Dispatchers.IO
     ): Flow<DataState> {
         return flow {
             emit(DataState.Loading)
             withContext(dispatcher) {
                 try {
-                    val result = Network.jobs.getJobs().await()
-                    val resultParsed = parseAsteroidsJsonResult(JSONObject(result))
+                    val url =
+                        createUrl(locationName, page, resultPerPage)
+                    Timber.d("Request url: $url")
+                    val result = Network.jobs.getJobs(url).await()
+                    val resultParsed = parseJobJsonResult(JSONObject(result), locationName)
                     jobDataBase.jobDao.insertAll(resultParsed.asDatabaseModel())
                     emit(DataState.Success)
                 } catch (throwable: Throwable) {
@@ -39,6 +46,13 @@ class JobRepository(private val jobDataBase: JobDatabase) {
                 }
             }
         }.flowOn(dispatcher)
+    }
+
+    private fun createUrl(locationName: String, page: String, resultPerPage: String): String {
+        var ret = "search?"
+        if (locationName.isNotEmpty() && locationName != Constants.DEFAULT)
+            ret += "LocationName=$locationName&"
+        return "${ret}Page=$page&ResultsPerPage=$resultPerPage"
     }
 
     suspend fun refreshSubdivision(
@@ -62,6 +76,9 @@ class JobRepository(private val jobDataBase: JobDatabase) {
 
     private fun parseSubdivisionsJsonResult(jsonObject: JSONObject): List<Subdivision> {
         val subdivisionList = ArrayList<Subdivision>()
+        // First option of the spinner is Default
+        var countrySubdivision = Subdivision(Constants.DEFAULT)
+        subdivisionList.add(countrySubdivision)
 
         val codeListtItems = jsonObject.getJSONArray("CodeList")
         val searchResultItems = codeListtItems.getJSONObject(0).getJSONArray("ValidValue")
@@ -72,8 +89,8 @@ class JobRepository(private val jobDataBase: JobDatabase) {
             if (parentCode == "US") {
                 var subdivisionName = subdivisionJson.getString("Value")
                 if (subdivisionName == "Undefined")
-                    subdivisionName = "Default"
-                val countrySubdivision = Subdivision(subdivisionName)
+                    subdivisionName = Constants.DEFAULT
+                countrySubdivision = Subdivision(subdivisionName)
                 subdivisionList.add(countrySubdivision)
             }
 
@@ -82,23 +99,26 @@ class JobRepository(private val jobDataBase: JobDatabase) {
         return subdivisionList
     }
 
-    private fun clearRepository() {
-        jobDataBase.clearAllTables()
+    fun clearJobRepository() {
+        jobDataBase.jobDao.clearTable()
     }
 
     suspend fun clearAndRefreshDatabase() {
-        clearRepository()
+        clearJobRepository()
         refreshJobs()
     }
 
-    private fun parseAsteroidsJsonResult(jsonResult: JSONObject): List<Job> {
+    private fun parseJobJsonResult(
+        jsonResult: JSONObject,
+        locationPrefName: String
+    ): List<Job> {
 
         val jobList = ArrayList<Job>()
 
         val searchResultJson = jsonResult.getJSONObject("SearchResult")
         val searchResultItems = searchResultJson.getJSONArray("SearchResultItems")
 
-        for (i in 0 until searchResultItems.length()) {
+        for (i in 0 until searchResultItems.length()) lit@ {
             val jobJson = searchResultItems.getJSONObject(i)
 
             val jobId = jobJson.getLong("MatchedObjectId")
@@ -115,13 +135,14 @@ class JobRepository(private val jobDataBase: JobDatabase) {
 
             val locationName = getStringFromJSON(positionLocationJSONObject, "LocationName")
 
-            val locationCountry =  getStringFromJSON(positionLocationJSONObject, "CountryCode")
+            val locationCountry = getStringFromJSON(positionLocationJSONObject, "CountryCode")
 
-            val countrySubDivisionCode = getStringFromJSON(positionLocationJSONObject, "CountrySubDivisionCode")
+            val countrySubDivisionCode =
+                getStringFromJSON(positionLocationJSONObject, "CountrySubDivisionCode")
 
-            val longitude =  getStringFromJSON(positionLocationJSONObject, "Longitude")
+            val longitude = getStringFromJSON(positionLocationJSONObject, "Longitude")
 
-            val latitude =  getStringFromJSON(positionLocationJSONObject, "Latitude")
+            val latitude = getStringFromJSON(positionLocationJSONObject, "Latitude")
 
             val organizationName = matchedObjectDescriptorJson.getString("OrganizationName")
 
@@ -137,45 +158,48 @@ class JobRepository(private val jobDataBase: JobDatabase) {
             val jobRateIntervalCode =
                 jobCPositionRemunerationJSONObject.getString("RateIntervalCode")
 
-            Timber.d(
-                "New job added from JSON: " +
-                        "id: $jobId" +
-                        " applyUri: $applyUri" +
-                        " locationName: $locationName" +
-                        " locationCountry: $locationCountry" +
-                        " longitude: $longitude" +
-                        " latitude: $latitude" +
-                        " organizationName: $organizationName" +
-                        " jobName: $jobName" +
-                        " jobMinimumRange: $jobMinimumRange" +
-                        " jobMaximumRange: $jobMaximumRange" +
-                        " jobRateIntervalCode: $jobRateIntervalCode"
-            )
-            val job = Job(
-                jobId,
-                applyUri,
-                locationName,
-                locationCountry,
-                countrySubDivisionCode,
-                longitude,
-                latitude,
-                organizationName,
-                jobName,
-                jobMinimumRange,
-                jobMaximumRange,
-                jobRateIntervalCode
-            )
-            jobList.add(job)
+            if ((hasNoPrefLocation(locationPrefName) ||
+                        isPrefLocation(locationName, locationPrefName))
+                && isUnitedStates(locationCountry)
+            ) {
+                val job = Job(
+                    jobId,
+                    applyUri,
+                    locationName,
+                    locationCountry,
+                    countrySubDivisionCode,
+                    longitude,
+                    latitude,
+                    organizationName,
+                    jobName,
+                    jobMinimumRange,
+                    jobMaximumRange,
+                    jobRateIntervalCode
+                )
+                jobList.add(job)
+            }
         }
 
         return jobList
     }
 
-    private fun getStringFromJSON(objectJSONObject: JSONObject, searchString: String): String {
-        if(objectJSONObject.has(searchString))
-           return objectJSONObject.getString(searchString)
+    private fun hasNoPrefLocation(locationPrefName: String): Boolean {
+        return locationPrefName == Constants.DEFAULT
+    }
 
-        return  ""
+    private fun isPrefLocation(location: String, locationPrefName: String): Boolean {
+        return location.contains(locationPrefName)
+    }
+
+    private fun isUnitedStates(locationCountry: String): Boolean {
+        return locationCountry == Constants.COUNTRY_CODE
+    }
+
+    private fun getStringFromJSON(objectJSONObject: JSONObject, searchString: String): String {
+        if (objectJSONObject.has(searchString))
+            return objectJSONObject.getString(searchString)
+
+        return ""
     }
 
 }

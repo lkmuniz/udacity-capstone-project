@@ -90,7 +90,10 @@ dependencies {
     implementation "android.arch.work:work-runtime-ktx:$rootProject.ext.work_version"
 
     // Picasso
-    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation "com.squareup.picasso:picasso:$rootProject.ext.picasso_version"
+
+    // Preferences
+    implementation "androidx.preference:preference-ktx:$rootProject.ext.preference_version"
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

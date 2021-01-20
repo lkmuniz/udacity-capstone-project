@@ -11,20 +11,26 @@ import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Url
 
 
 interface ApiService {
     @Headers(
         Constants.HEADER_HOST,
         Constants.HEADER_USER_AGENT,
-        Constants.HEADER_AUTHORIZATION_KEY)
-    @GET("Search?Keyword=Software")
-    fun getJobs(): Deferred<String>
+        Constants.HEADER_AUTHORIZATION_KEY
+    )
+    /**
+     *  The API is not filtering the LocationName correctly
+     */
+    @GET
+    fun getJobs(@Url url: String): Deferred<String>
 
     @Headers(
         Constants.HEADER_HOST,
         Constants.HEADER_USER_AGENT,
-        Constants.HEADER_AUTHORIZATION_KEY)
+        Constants.HEADER_AUTHORIZATION_KEY
+    )
     @GET("codelist/countrysubdivisions/")
     fun getSubdivision(): Deferred<String>
 }
