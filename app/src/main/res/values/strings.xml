@@ -7,4 +7,6 @@
     <string name="logout">Logout</string>
     <string name="country">Country</string>
     <string name="_default">Default</string>
+
+    <string name="salary_min_max"><b>Salary:</b> $%s - $%s / %s</string>
 </resources>
