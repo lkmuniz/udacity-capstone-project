@@ -30,16 +30,26 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Spinner
-                android:id="@+id/spinner_subdivision"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/spinner_holder"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@android:drawable/btn_dropdown"
+                android:layout_marginHorizontal="32dp"
                 android:spinnerMode="dropdown"
+                app:startIconDrawable="@drawable/ic_location"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/jobFragment_image" />
+                app:layout_constraintTop_toBottomOf="@+id/jobFragment_image" >
+
+                <AutoCompleteTextView
+                    android:id="@+id/spinner_subdivision"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
+                    android:enabled="false"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/jobFragment_list"
@@ -52,7 +62,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinner_subdivision"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_holder"
                 tools:listitem="@layout/job_item" />
 
             <ProgressBar

@@ -99,11 +99,11 @@ class JobListFragment : BaseFragment() {
         _viewModel.resultSubdivision.observe(viewLifecycleOwner, { countryList ->
             ArrayAdapter(
                 requireContext(),
-                android.R.layout.simple_spinner_item,
+                R.layout.spinner_item,
                 countryList
             ).also { adapter ->
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                binding.spinnerSubdivision.adapter = adapter
+                binding.spinnerSubdivision.setAdapter(adapter)
 
                 /**
                  * Check if the user already selected some location and set on spinner
@@ -112,8 +112,10 @@ class JobListFragment : BaseFragment() {
                 if (prefLocation.isNotEmpty()) {
                     var pos = _viewModel.resultSubdivision.value?.indexOf(prefLocation)
                     pos = if (pos == -1) 0 else pos
-                    binding.spinnerSubdivision.setSelection(pos!!)
+                    binding.spinnerSubdivision.hint = _viewModel.resultSubdivision.value?.get(pos!!)
                     _viewModel.showSnackBar.value = pos.toString()
+                }else{
+                    binding.spinnerSubdivision.hint = context?.getString(R.string.select_yout_city)
                 }
             }
         })
@@ -122,19 +124,10 @@ class JobListFragment : BaseFragment() {
          *  When user select the division from spinner, the sharedpreference is updated
          *  and a new query is made
          */
-        binding.spinnerSubdivision.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onItemSelected(
-                parentView: AdapterView<*>?,
-                selectedItemView: View?,
-                position: Int,
-                id: Long
-            ) {
-                val value = _viewModel.resultSubdivision.value?.get(position)
-                _viewModel.saveLocationPreference(value)
-            }
+        binding.spinnerSubdivision.setOnItemClickListener { adapterView, view, position, l ->
+            val value = _viewModel.resultSubdivision.value?.get(position)
+            _viewModel.saveLocationPreference(value)
 
-            override fun onNothingSelected(parentView: AdapterView<*>?) {
-            }
         }
     }
 }
