@@ -66,10 +66,6 @@ class JobListFragment : BaseFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.menu_preference -> {
-            _viewModel.showSnackBar.postValue("Menu Preferences")
-            true
-        }
         R.id.menu_logout -> {
             _viewModel.showSnackBar.postValue("Menu Logout")
             true

@@ -2,10 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_preference"
-        android:title="@string/preferences"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/menu_logout"
         android:title="@string/logout"
         app:showAsAction="never" />
