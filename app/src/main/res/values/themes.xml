@@ -28,4 +28,11 @@
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body1</item>
     </style>
 
+    <style name="ButtonDefault" parent="Theme.USAJob">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/button_margin</item>
+    </style>
+
+    <dimen name="button_margin">8dp</dimen>
 </resources>
