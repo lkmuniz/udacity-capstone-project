@@ -20,6 +20,7 @@ fun List<Job>.asDatabaseModel(): List<JobEntity> {
             latitude = it.latitude,
             organizationName = it.organizationName,
             jobName = it.jobName,
+            jobCategory = it.jobCategory,
             jobMinimumRange = it.jobMinimumRange,
             jobMaximumRange = it.jobMaximumRange,
             jobRateIntervalCode = it.jobRateIntervalCode
@@ -39,6 +40,7 @@ fun List<JobEntity>.asDomainModel(): List<Job> {
             latitude = it.latitude,
             organizationName = it.organizationName,
             jobName = it.jobName,
+            jobCategory = it.jobCategory,
             jobMinimumRange = it.jobMinimumRange,
             jobMaximumRange = it.jobMaximumRange,
             jobRateIntervalCode = it.jobRateIntervalCode

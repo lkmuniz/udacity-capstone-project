@@ -129,6 +129,8 @@ class JobRepository(private val jobDataBase: JobDatabase) {
                 matchedObjectDescriptorJson.getString("ApplyURI").replace("[", "").replace("]", "")
                     .replace("\\", "")
 
+            val jobName = matchedObjectDescriptorJson.getString("PositionTitle")
+
             val positionLocationArray = matchedObjectDescriptorJson.getJSONArray("PositionLocation")
 
             val positionLocationJSONObject = positionLocationArray.getJSONObject(0)
@@ -148,7 +150,7 @@ class JobRepository(private val jobDataBase: JobDatabase) {
 
             val jobCategoryArray = matchedObjectDescriptorJson.getJSONArray("JobCategory")
             val jobCategoryJSONObject = jobCategoryArray.getJSONObject(0)
-            val jobName = jobCategoryJSONObject.getString("Name")
+            val jobCategory = jobCategoryJSONObject.getString("Name")
 
             val jobPositionRemunerationArray =
                 matchedObjectDescriptorJson.getJSONArray("PositionRemuneration")
@@ -172,6 +174,7 @@ class JobRepository(private val jobDataBase: JobDatabase) {
                     latitude,
                     organizationName,
                     jobName,
+                    jobCategory,
                     jobMinimumRange,
                     jobMaximumRange,
                     jobRateIntervalCode
