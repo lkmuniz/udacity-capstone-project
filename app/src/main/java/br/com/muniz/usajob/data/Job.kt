@@ -16,6 +16,8 @@ data class Job(
     val jobName: String,
     val jobCategory: String,
     val jobQualificationSummary: String,
+    val publicationStartDate: String,
+    val applicationCloseDate: String,
     val jobMinimumRange: String,
     val jobMaximumRange: String,
     val jobRateIntervalCode: String,

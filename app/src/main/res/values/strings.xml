@@ -9,6 +9,9 @@
     <string name="_default">Default</string>
 
     <string name="salary_min_max"><b>Salary:</b> $%s - $%s / %s</string>
+    <string name="detail_salary_min_max">$%s - $%s / %s</string>
+    <string name="detail_work_schedule">Work schedule: %s</string>
+    <string name="detail_job_date">%s to %s</string>
     <string name="select_yout_city">Select Your City</string>
     <string name="apply">Apply</string>
     <string name="route">Route</string>

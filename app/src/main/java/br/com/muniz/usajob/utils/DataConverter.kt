@@ -22,6 +22,8 @@ fun List<Job>.asDatabaseModel(): List<JobEntity> {
             jobName = it.jobName,
             jobCategory = it.jobCategory,
             jobQualificationSummary = it.jobQualificationSummary,
+            publicationStartDate = it.publicationStartDate,
+            applicationCloseDate = it.applicationCloseDate,
             jobMinimumRange = it.jobMinimumRange,
             jobMaximumRange = it.jobMaximumRange,
             jobRateIntervalCode = it.jobRateIntervalCode
@@ -43,6 +45,8 @@ fun List<JobEntity>.asDomainModel(): List<Job> {
             jobName = it.jobName,
             jobCategory = it.jobCategory,
             jobQualificationSummary = it.jobQualificationSummary,
+            publicationStartDate = it.publicationStartDate,
+            applicationCloseDate = it.applicationCloseDate,
             jobMinimumRange = it.jobMinimumRange,
             jobMaximumRange = it.jobMaximumRange,
             jobRateIntervalCode = it.jobRateIntervalCode

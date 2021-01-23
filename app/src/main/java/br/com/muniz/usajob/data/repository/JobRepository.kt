@@ -154,6 +154,9 @@ class JobRepository(private val jobDataBase: JobDatabase) {
 
             val jobQualificationSummary = matchedObjectDescriptorJson.getString("QualificationSummary")
 
+            val publicationStartDate = matchedObjectDescriptorJson.getString("PublicationStartDate")
+            val applicationCloseDate = matchedObjectDescriptorJson.getString("ApplicationCloseDate")
+
             val jobPositionRemunerationArray =
                 matchedObjectDescriptorJson.getJSONArray("PositionRemuneration")
             val jobCPositionRemunerationJSONObject = jobPositionRemunerationArray.getJSONObject(0)
@@ -178,6 +181,8 @@ class JobRepository(private val jobDataBase: JobDatabase) {
                     jobName,
                     jobCategory,
                     jobQualificationSummary,
+                    publicationStartDate,
+                    applicationCloseDate,
                     jobMinimumRange,
                     jobMaximumRange,
                     jobRateIntervalCode
