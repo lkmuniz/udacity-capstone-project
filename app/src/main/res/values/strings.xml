@@ -11,4 +11,5 @@
     <string name="salary_min_max"><b>Salary:</b> $%s - $%s / %s</string>
     <string name="select_yout_city">Select Your City</string>
     <string name="apply">Apply</string>
+    <string name="route">Route</string>
 </resources>
