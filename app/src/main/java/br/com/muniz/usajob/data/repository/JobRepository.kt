@@ -152,6 +152,8 @@ class JobRepository(private val jobDataBase: JobDatabase) {
             val jobCategoryJSONObject = jobCategoryArray.getJSONObject(0)
             val jobCategory = jobCategoryJSONObject.getString("Name")
 
+            val jobQualificationSummary = matchedObjectDescriptorJson.getString("QualificationSummary")
+
             val jobPositionRemunerationArray =
                 matchedObjectDescriptorJson.getJSONArray("PositionRemuneration")
             val jobCPositionRemunerationJSONObject = jobPositionRemunerationArray.getJSONObject(0)
@@ -175,6 +177,7 @@ class JobRepository(private val jobDataBase: JobDatabase) {
                     organizationName,
                     jobName,
                     jobCategory,
+                    jobQualificationSummary,
                     jobMinimumRange,
                     jobMaximumRange,
                     jobRateIntervalCode
