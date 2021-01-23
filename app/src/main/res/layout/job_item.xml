@@ -15,9 +15,10 @@
         android:id="@+id/reminderCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:cardCornerRadius="8dp"
-        android:backgroundTint="@color/lightGray"
+        android:layout_marginVertical="@dimen/card_vertical_margin"
+        android:layout_marginHorizontal="@dimen/card_horizontal_margin"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:clickable="true">
 
 
@@ -47,16 +48,16 @@
                 style="@style/TextBody1"
                 android:gravity="center"
                 android:text="@{item.locationName}"
-                app:layout_constraintStart_toStartOf="@+id/description"
+                app:layout_constraintStart_toStartOf="@+id/title"
                 app:layout_constraintTop_toBottomOf="@+id/description"
                 tools:text="Location" />
 
             <TextView
                 style="@style/TextBody1"
-                android:gravity="center"
                 android:layout_marginTop="8dp"
+                android:gravity="center"
                 android:text="@{@string/salary_min_max(item.jobMinimumRange,item.jobMaximumRange ,item.jobRateIntervalCode)}"
-                app:layout_constraintStart_toStartOf="@+id/location"
+                app:layout_constraintStart_toStartOf="@+id/title"
                 app:layout_constraintTop_toBottomOf="@+id/location"
                 tools:text="Salary: $1 to $100 per year" />
 
