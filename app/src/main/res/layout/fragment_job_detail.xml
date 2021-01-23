@@ -15,6 +15,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <LinearLayout
+            android:id="@+id/header_layout"
+            style="@style/DetailsHeader"
+            android:orientation="vertical"
+            android:paddingVertical="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/description_jobName"
+                style="@style/HeaderTitle"
+                android:text="@{job.jobName}"
+                tools:text="Job Name" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/description_organizationName"
+                style="@style/HeaderSubtitle"
+                android:text="@{job.organizationName}"
+                tools:text="Organization Name" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/description_jobCategory"
+                style="@style/HeaderBody"
+                android:text="@{job.jobCategory}"
+                tools:text="Job Category" />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/detail_jobName"
             android:layout_width="wrap_content"
