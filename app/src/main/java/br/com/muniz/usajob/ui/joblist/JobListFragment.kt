@@ -1,18 +1,19 @@
 package br.com.muniz.usajob.ui.joblist
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import br.com.muniz.usajob.R
+import br.com.muniz.usajob.authentication.AuthenticationActivity
 import br.com.muniz.usajob.base.BaseFragment
 import br.com.muniz.usajob.base.NavigationCommand
 import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.databinding.FragmentJobListBinding
 import br.com.muniz.usajob.utils.setup
+import com.firebase.ui.auth.AuthUI
 
 /**
  * A fragment representing a list of Items.
@@ -65,12 +66,14 @@ class JobListFragment : BaseFragment() {
         inflater.inflate(R.menu.menu_options, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.menu_logout -> {
-            _viewModel.showSnackBar.postValue("Menu Logout")
-            true
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_logout -> {
+                logout()
+            }
         }
-        else -> super.onOptionsItemSelected(item)
+        return super.onOptionsItemSelected(item)
+
     }
 
     private fun setupRecyclerView() {
@@ -110,7 +113,7 @@ class JobListFragment : BaseFragment() {
                     pos = if (pos == -1) 0 else pos
                     binding.spinnerSubdivision.hint = _viewModel.resultSubdivision.value?.get(pos!!)
                     _viewModel.showSnackBar.value = pos.toString()
-                }else{
+                } else {
                     binding.spinnerSubdivision.hint = context?.getString(R.string.select_yout_city)
                 }
             }
@@ -124,6 +127,15 @@ class JobListFragment : BaseFragment() {
             val value = _viewModel.resultSubdivision.value?.get(position)
             _viewModel.saveLocationPreference(value)
 
+        }
+    }
+
+    private fun logout() {
+        AuthUI.getInstance().signOut(requireContext()).addOnCompleteListener {
+            val intent = Intent(requireContext(), AuthenticationActivity::class.java)
+            _viewModel.showToast.value = context?.getString(R.string.logout_successfully)
+            requireActivity().startActivity(intent)
+            requireActivity().finish()
         }
     }
 }
