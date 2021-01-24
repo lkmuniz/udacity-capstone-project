@@ -15,7 +15,11 @@
         android:label="JobListFragment">
         <action
             android:id="@+id/action_jobListFragment_to_jobDetailFragment"
-            app:destination="@id/jobDetailFragment" />
+            app:destination="@id/jobDetailFragment"
+            app:enterAnim="@anim/slide_in_bottom"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
 
     <fragment
