@@ -138,9 +138,26 @@ class JobListViewModel(application: Application) : BaseViewModel(application) {
         clearAndRefreshDataBase()
     }
 
+    private fun clearSharedPreference() {
+        sharedPreferenceHelper.clear()
+    }
+
+    private fun clearDataBase() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                jobRepository.clearJobRepository()
+            }
+        }
+    }
+
     fun getPrefLocation(): String {
         return sharedPreferenceHelper.getValue(Constants.LOCATION_PREF_KEY, TypeValue.STRING)
             .toString()
+    }
+
+    fun logoutFlow() {
+        clearSharedPreference()
+        clearDataBase()
     }
 
     class Factory(private val application: Application) : ViewModelProvider.Factory {

@@ -133,6 +133,7 @@ class JobListFragment : BaseFragment() {
     private fun logout() {
         AuthUI.getInstance().signOut(requireContext()).addOnCompleteListener {
             val intent = Intent(requireContext(), AuthenticationActivity::class.java)
+            _viewModel.logoutFlow()
             _viewModel.showToast.value = context?.getString(R.string.logout_successfully)
             requireActivity().startActivity(intent)
             requireActivity().finish()
