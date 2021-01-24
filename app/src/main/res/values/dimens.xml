@@ -13,4 +13,6 @@
     <!--Detail dimens -->
     <dimen name="detail_header_padding_vertical">20dp</dimen>
     <dimen name="header_margin_top">5dp</dimen>
+    <dimen name="detail_body_margin_top">20dp</dimen>
+    <dimen name="detail_body_margin_end">20dp</dimen>
 </resources>

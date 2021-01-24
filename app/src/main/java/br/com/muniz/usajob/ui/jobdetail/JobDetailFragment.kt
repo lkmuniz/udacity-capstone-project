@@ -49,6 +49,10 @@ class JobDetailFragment() : BaseFragment() {
 
         setHasOptionsMenu(true)
 
+        binding.detailApply.setOnClickListener {
+            openApplyUrl()
+        }
+
         return binding.root
     }
 
@@ -71,5 +75,13 @@ class JobDetailFragment() : BaseFragment() {
         mapIntent.resolveActivity(requireActivity().packageManager)?.let {
             requireActivity().startActivity(mapIntent)
         }
+    }
+
+    private fun openApplyUrl() {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(job.applyUri.replace("\"", ""))
+
+        requireActivity().startActivity(intent)
+
     }
 }
