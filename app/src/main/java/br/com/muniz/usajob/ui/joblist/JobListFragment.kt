@@ -12,6 +12,7 @@ import br.com.muniz.usajob.base.BaseFragment
 import br.com.muniz.usajob.base.NavigationCommand
 import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.databinding.FragmentJobListBinding
+import br.com.muniz.usajob.utils.cancelNotifications
 import br.com.muniz.usajob.utils.setup
 import com.firebase.ui.auth.AuthUI
 
@@ -52,6 +53,7 @@ class JobListFragment : BaseFragment() {
         }
 
         setupSubdivisionSpinner()
+        cancelNotifications(requireContext())
 
         return binding.root
     }

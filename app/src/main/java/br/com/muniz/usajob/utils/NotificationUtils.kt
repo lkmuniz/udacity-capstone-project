@@ -41,7 +41,18 @@ fun sendNotification(context: Context) {
         .setAutoCancel(true)
         .build()
 
+    notificationManager.cancelAll()
     notificationManager.notify(getUniqueId(), notification)
 }
 
 private fun getUniqueId() = ((System.currentTimeMillis() % 10000).toInt())
+
+/**
+ * Cancels all notifications.
+ *
+ */
+fun cancelNotifications(context: Context) {
+    val notificationManager = context
+        .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    notificationManager.cancelAll()
+}
