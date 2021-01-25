@@ -10,10 +10,12 @@
             type="br.com.muniz.usajob.data.Job" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/map_container"
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/motion_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layoutDescription="@xml/motion_scene"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:id="@+id/header_layout"
@@ -43,112 +45,108 @@
                 tools:text="Job Category" />
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/image_location"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/ic_location"
+            app:layout_constraintBottom_toBottomOf="@+id/detailLocationName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/detailLocationName" />
+
+        <TextView
+            android:id="@+id/detailLocationName"
+            style="@style/TextBody1"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@{job.locationName}"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintStart_toEndOf="@+id/image_location"
+            app:layout_constraintTop_toBottomOf="@id/header_layout"
+            tools:text="Location" />
+
+        <ImageView
+            android:id="@+id/image_money"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@drawable/ic_money"
+            app:layout_constraintBottom_toBottomOf="@+id/detailSalary"
+            app:layout_constraintStart_toStartOf="@+id/image_location"
+            app:layout_constraintTop_toTopOf="@+id/detailSalary" />
+
+        <TextView
+            android:id="@+id/detailSalary"
+            style="@style/DetailsTextBody"
+            android:text="@{@string/detail_salary_min_max(job.jobMinimumRange,job.jobMaximumRange ,job.jobRateIntervalCode)}"
+            app:layout_constraintStart_toStartOf="@+id/detailLocationName"
+            app:layout_constraintTop_toBottomOf="@+id/detailLocationName"
+            tools:text="$1 to $100 per year" />
+
+        <ImageView
+            android:id="@+id/image_calendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_calendar"
+            app:layout_constraintBottom_toBottomOf="@+id/detailDates"
+            app:layout_constraintStart_toStartOf="@+id/image_location"
+            app:layout_constraintTop_toTopOf="@+id/detailDates" />
+
+        <TextView
+            android:id="@+id/detailDates"
+            style="@style/DetailsTextBody"
+            android:text="@{@string/detail_job_date(job.publicationStartDate, job.applicationCloseDate)}"
+            app:layout_constraintStart_toStartOf="@+id/detailLocationName"
+            app:layout_constraintTop_toBottomOf="@+id/detailSalary"
+            tools:text="23/01/2021 to 30/01/2021" />
+
+        <ImageView
+            android:id="@+id/image_schedule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_schedule"
+            app:layout_constraintBottom_toBottomOf="@+id/textView2"
+            app:layout_constraintStart_toStartOf="@+id/image_location"
+            app:layout_constraintTop_toTopOf="@+id/textView2" />
+
+        <TextView
+            android:id="@+id/textView2"
+            style="@style/DetailsTextBody"
+            android:text="@{@string/detail_work_schedule(job.jobMinimumRange)}"
+            app:layout_constraintStart_toStartOf="@+id/detailLocationName"
+            app:layout_constraintTop_toBottomOf="@+id/detailDates"
+            tools:text="Work-Schedule: Full-Time" />
+
+        <TextView
+            android:id="@+id/textView4"
+            style="@style/DetailsTextBody"
+            android:text="@string/description"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/image_location"
+            app:layout_constraintTop_toBottomOf="@+id/image_schedule" />
+
         <ScrollView
             android:id="@+id/scrollView2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginHorizontal="20dp"
             app:layout_constraintBottom_toTopOf="@+id/detail_apply"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/header_layout"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintTop_toBottomOf="@+id/textView4">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp">
-
-                <ImageView
-                    android:id="@+id/image_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="20dp"
-                    android:background="@drawable/ic_location"
-                    app:layout_constraintBottom_toBottomOf="@+id/detailLocationName"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/detailLocationName" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/detailLocationName"
-                    style="@style/TextBody1"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="20dp"
-                    android:gravity="center"
-                    android:text="@{job.locationName}"
-                    android:textColor="@color/colorPrimary"
-                    app:layout_constraintStart_toEndOf="@+id/image_location"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Location" />
-
-                <ImageView
-                    android:id="@+id/image_money"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:background="@drawable/ic_money"
-                    app:layout_constraintBottom_toBottomOf="@+id/detailSalary"
-                    app:layout_constraintStart_toStartOf="@+id/image_location"
-                    app:layout_constraintTop_toTopOf="@+id/detailSalary" />
-
-                <TextView
-                    android:id="@+id/detailSalary"
                     style="@style/DetailsTextBody"
-                    android:text="@{@string/detail_salary_min_max(job.jobMinimumRange,job.jobMaximumRange ,job.jobRateIntervalCode)}"
-                    app:layout_constraintStart_toStartOf="@+id/detailLocationName"
-                    app:layout_constraintTop_toBottomOf="@+id/detailLocationName"
-                    tools:text="$1 to $100 per year" />
-
-                <ImageView
-                    android:id="@+id/image_calendar"
-                    android:layout_width="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ic_calendar"
-                    app:layout_constraintBottom_toBottomOf="@+id/detailDates"
-                    app:layout_constraintStart_toStartOf="@+id/image_location"
-                    app:layout_constraintTop_toTopOf="@+id/detailDates" />
-
-                <TextView
-                    android:id="@+id/detailDates"
-                    style="@style/DetailsTextBody"
-                    android:text="@{@string/detail_job_date(job.publicationStartDate, job.applicationCloseDate)}"
-                    app:layout_constraintStart_toStartOf="@+id/detailLocationName"
-                    app:layout_constraintTop_toBottomOf="@+id/detailSalary"
-                    tools:text="23/01/2021 to 30/01/2021" />
-
-                <ImageView
-                    android:id="@+id/image_schedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ic_schedule"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView2"
-                    app:layout_constraintStart_toStartOf="@+id/image_location"
-                    app:layout_constraintTop_toTopOf="@+id/textView2" />
-
-                <TextView
-                    android:id="@+id/textView2"
-                    style="@style/DetailsTextBody"
-                    android:text="@{@string/detail_work_schedule(job.jobMinimumRange)}"
-                    app:layout_constraintStart_toStartOf="@+id/detailLocationName"
-                    app:layout_constraintTop_toBottomOf="@+id/detailDates"
-                    tools:text="Work-Schedule: Full-Time" />
-
-                <TextView
-                    android:id="@+id/textView4"
-                    style="@style/DetailsTextBody"
-                    android:text="@string/description"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="@+id/image_location"
-                    app:layout_constraintTop_toBottomOf="@+id/image_schedule" />
-
-                <TextView
-                    style="@style/DetailsTextBody"
                     android:text="@{job.jobQualificationSummary}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/textView4"
-                    app:layout_constraintTop_toBottomOf="@+id/textView4"
                     tools:text="Job description" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+            </LinearLayout>
         </ScrollView>
 
         <Button
@@ -159,5 +157,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 </layout>
