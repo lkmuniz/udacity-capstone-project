@@ -11,6 +11,7 @@ import br.com.muniz.usajob.R
 import br.com.muniz.usajob.base.BaseFragment
 import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.databinding.FragmentJobDetailBinding
+import br.com.muniz.usajob.utils.setDisplayHomeAsUpEnabled
 
 /**
  * A simple [Fragment] subclass.
@@ -48,6 +49,7 @@ class JobDetailFragment() : BaseFragment() {
         binding.lifecycleOwner = this
 
         setHasOptionsMenu(true)
+        setDisplayHomeAsUpEnabled(true)
 
         binding.detailApply.setOnClickListener {
             openApplyUrl()
