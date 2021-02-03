@@ -98,6 +98,10 @@ dependencies {
     // Material io
     implementation "com.google.android.material:material:$rootProject.ext.material_version"
 
+    // Koin
+    implementation "org.koin:koin-android:$rootProject.ext.koin_version"
+    implementation "org.koin:koin-androidx-viewmodel:$rootProject.ext.koin_version"
+
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
