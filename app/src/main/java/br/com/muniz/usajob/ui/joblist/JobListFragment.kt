@@ -16,6 +16,8 @@ import br.com.muniz.usajob.utils.cancelNotifications
 import br.com.muniz.usajob.utils.setDisplayHomeAsUpEnabled
 import br.com.muniz.usajob.utils.setup
 import com.firebase.ui.auth.AuthUI
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * A fragment representing a list of Items.
@@ -24,15 +26,7 @@ class JobListFragment : BaseFragment() {
 
     private lateinit var binding: FragmentJobListBinding
 
-    override val _viewModel: JobListViewModel by lazy {
-        ViewModelProvider(
-            requireActivity(),
-            JobListViewModel.Factory(
-                requireActivity().application
-            )
-        ).get(JobListViewModel::class.java)
-    }
-
+    override val _viewModel by inject<JobListViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,

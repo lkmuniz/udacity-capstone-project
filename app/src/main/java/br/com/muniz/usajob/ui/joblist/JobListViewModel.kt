@@ -14,7 +14,11 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class JobListViewModel(application: Application) : BaseViewModel(application) {
+class JobListViewModel(
+    application: Application,
+    private val jobRepository: JobRepository
+) :
+    BaseViewModel(application) {
 
     private var sharedPreferenceHelper = PreferenceHelper(application)
 
@@ -26,11 +30,6 @@ class JobListViewModel(application: Application) : BaseViewModel(application) {
 
     private var _imageUrl = MutableLiveData(BASE_IMAGE_URL)
     val imageUrl: LiveData<String> = _imageUrl
-
-    private val jobRepository: JobRepository by lazy {
-        val database = getDatabase(getApplication())
-        JobRepository(database)
-    }
 
     init {
         getSubdivisions()
@@ -160,13 +159,4 @@ class JobListViewModel(application: Application) : BaseViewModel(application) {
         clearDataBase()
     }
 
-    class Factory(private val application: Application) : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(JobListViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return JobListViewModel(application) as T
-            }
-            throw IllegalArgumentException("Unable to construct viewmodel")
-        }
-    }
 }
