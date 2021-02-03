@@ -12,6 +12,7 @@ import br.com.muniz.usajob.base.BaseFragment
 import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.databinding.FragmentJobDetailBinding
 import br.com.muniz.usajob.utils.setDisplayHomeAsUpEnabled
+import org.koin.android.ext.android.inject
 
 /**
  * A simple [Fragment] subclass.
@@ -23,14 +24,7 @@ class JobDetailFragment() : BaseFragment() {
     private lateinit var binding: FragmentJobDetailBinding
     private lateinit var job: Job
 
-    override val _viewModel: JobDetailViewModel by lazy {
-        ViewModelProvider(
-            requireActivity(),
-            JobDetailViewModel.Factory(
-                requireActivity().application
-            )
-        ).get(JobDetailViewModel::class.java)
-    }
+    override val _viewModel by inject<JobDetailViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,

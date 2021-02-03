@@ -5,6 +5,7 @@ import androidx.work.*
 import br.com.muniz.usajob.data.local.JobDatabase
 import br.com.muniz.usajob.data.local.getDatabase
 import br.com.muniz.usajob.data.repository.JobRepository
+import br.com.muniz.usajob.ui.jobdetail.JobDetailViewModel
 import br.com.muniz.usajob.ui.joblist.JobListViewModel
 import br.com.muniz.usajob.work.RefreshDataWork
 import kotlinx.coroutines.CoroutineScope
@@ -25,7 +26,13 @@ class MyApp : Application() {
 
         single { JobRepository(getDatabase(this@MyApp)) }
 
-        viewModel { JobListViewModel(this@MyApp, get()) }
+        viewModel {
+            JobListViewModel(this@MyApp, get())
+        }
+
+        viewModel {
+            JobDetailViewModel(this@MyApp)
+        }
 
     }
 
