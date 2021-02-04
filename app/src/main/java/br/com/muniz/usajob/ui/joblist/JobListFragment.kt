@@ -110,7 +110,6 @@ class JobListFragment : BaseFragment() {
                     var pos = _viewModel.resultSubdivision.value?.indexOf(prefLocation)
                     pos = if (pos == -1) 0 else pos
                     binding.spinnerSubdivision.hint = _viewModel.resultSubdivision.value?.get(pos!!)
-                    _viewModel.showSnackBar.value = pos.toString()
                 } else {
                     binding.spinnerSubdivision.hint = context?.getString(R.string.select_yout_city)
                 }
