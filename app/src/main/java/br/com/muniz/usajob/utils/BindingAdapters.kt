@@ -71,11 +71,3 @@ object BindingAdapters {
         })
     }
 }
-
-@BindingAdapter("imageUrl")
-fun bindPictureOfDayImage(imageView: ImageView, url: String?) {
-    val picasso = Picasso.get()
-    picasso.setIndicatorsEnabled(true)
-    picasso.load(url)
-        .into(imageView)
-}

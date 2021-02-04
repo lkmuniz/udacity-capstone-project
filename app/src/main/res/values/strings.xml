@@ -18,4 +18,5 @@
     <string name="description">Description</string>
     <string name="logout_successfully">Logout Successfully</string>
     <string name="welcome_text">Find your new job here!</string>
+    <string name="find_job_text">Find Your Job</string>
 </resources>

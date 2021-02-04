@@ -3,10 +3,8 @@ package br.com.muniz.usajob.ui.joblist
 import android.app.Application
 import androidx.lifecycle.*
 import br.com.muniz.usajob.Constants
-import br.com.muniz.usajob.Constants.BASE_IMAGE_URL
 import br.com.muniz.usajob.base.BaseViewModel
 import br.com.muniz.usajob.data.Job
-import br.com.muniz.usajob.data.local.getDatabase
 import br.com.muniz.usajob.data.repository.JobRepository
 import br.com.muniz.usajob.utils.*
 import kotlinx.coroutines.Dispatchers
@@ -27,9 +25,6 @@ class JobListViewModel(
 
     private var _resultSubdivision = MutableLiveData<List<String>>()
     val resultSubdivision: LiveData<List<String>> = _resultSubdivision
-
-    private var _imageUrl = MutableLiveData(BASE_IMAGE_URL)
-    val imageUrl: LiveData<String> = _imageUrl
 
     init {
         getSubdivisions()
