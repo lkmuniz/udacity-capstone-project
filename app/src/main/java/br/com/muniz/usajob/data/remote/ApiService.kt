@@ -28,7 +28,9 @@ interface ApiService {
     fun getJobs(
         @Query("LocationName") locationName: String,
         @Query("Page") page: String,
-        @Query("ResultsPerPage") resultsPerPage: String
+        @Query("ResultsPerPage") resultsPerPage: String,
+        @Query("Keyword") keyword: String,
+        @Query("Fields") fields: String = "min"
     ): Deferred<String>
 
     @Headers(

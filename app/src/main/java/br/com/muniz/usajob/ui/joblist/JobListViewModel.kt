@@ -31,10 +31,13 @@ class JobListViewModel(
         configViewModel()
     }
 
-    private fun refreshJobs() {
+    private fun refreshJobs(keyword: String) {
         viewModelScope.launch {
             val location = getPrefLocation()
-            jobRepository.refreshJobs(location).collect { state ->
+            jobRepository.refreshJobs(
+                locationName = location,
+                keyword = keyword
+            ).collect { state ->
                 when (state) {
                     DataState.Loading -> {
                         showLoading.value = true
@@ -68,7 +71,7 @@ class JobListViewModel(
         }
     }
 
-    private fun configViewModel() {
+    private fun configViewModel(keyword: String = "") {
         configDefaultPreference()
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -78,7 +81,7 @@ class JobListViewModel(
                     if (it.isNotEmpty()) {
                         _resultJob.postValue(it)
                     } else {
-                        refreshJobs()
+                        refreshJobs(keyword)
                     }
                 }
             }
@@ -98,11 +101,11 @@ class JobListViewModel(
         )
     }
 
-    fun clearAndRefreshDataBase() {
+    fun clearAndRefreshDataBase(keyword: String = "") {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 jobRepository.clearJobRepository()
-                configViewModel()
+                configViewModel(keyword)
             }
         }
     }

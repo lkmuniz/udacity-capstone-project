@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
+import android.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import br.com.muniz.usajob.R
@@ -24,6 +25,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  */
 class JobListFragment : BaseFragment() {
 
+    private lateinit var adapter: JobAdapter
     private lateinit var binding: FragmentJobListBinding
 
     override val _viewModel by inject<JobListViewModel>()
@@ -62,6 +64,23 @@ class JobListFragment : BaseFragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_options, menu)
+
+        val menuSearchView: SearchView = menu.findItem(R.id.menu_search).actionView as SearchView
+        menuSearchView.queryHint = requireContext().getString(R.string.searc_job)
+
+        menuSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query.let {
+                    _viewModel.clearAndRefreshDataBase(query!!)
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                return false
+            }
+
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -75,7 +94,7 @@ class JobListFragment : BaseFragment() {
     }
 
     private fun setupRecyclerView() {
-        val adapter = JobAdapter { job ->
+        adapter = JobAdapter { job ->
             navigateToAddReminder(job)
         }
 

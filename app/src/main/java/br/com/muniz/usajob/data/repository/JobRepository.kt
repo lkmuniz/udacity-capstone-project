@@ -25,6 +25,7 @@ class JobRepository(private val jobDataBase: JobDatabase) {
 
     suspend fun refreshJobs(
         locationName: String = "",
+        keyword: String = "",
         page: String = Constants.PAGE_NUMBER,
         resultPerPage: String = Constants.RESULT_PER_PAGE,
         dispatcher: CoroutineDispatcher = Dispatchers.IO
@@ -36,7 +37,8 @@ class JobRepository(private val jobDataBase: JobDatabase) {
                     val result = Network.jobs.getJobs(
                         locationName = locationName,
                         page = page,
-                        resultsPerPage = resultPerPage
+                        resultsPerPage = resultPerPage,
+                        keyword = keyword
                     ).await()
                     val resultParsed = parseJobJsonResult(JSONObject(result), locationName)
                     jobDataBase.jobDao.insertAll(resultParsed.asDatabaseModel())
