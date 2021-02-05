@@ -11,6 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Query
 import retrofit2.http.Url
 
 
@@ -23,8 +24,12 @@ interface ApiService {
     /**
      *  The API is not filtering the LocationName correctly
      */
-    @GET
-    fun getJobs(@Url url: String): Deferred<String>
+    @GET("search?")
+    fun getJobs(
+        @Query("LocationName") locationName: String,
+        @Query("Page") page: String,
+        @Query("ResultsPerPage") resultsPerPage: String
+    ): Deferred<String>
 
     @Headers(
         Constants.HEADER_HOST,

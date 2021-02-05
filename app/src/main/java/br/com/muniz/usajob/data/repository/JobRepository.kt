@@ -33,10 +33,11 @@ class JobRepository(private val jobDataBase: JobDatabase) {
             emit(DataState.Loading)
             withContext(dispatcher) {
                 try {
-                    val url =
-                        createUrl(locationName, page, resultPerPage)
-                    Timber.d("Request url: $url")
-                    val result = Network.jobs.getJobs(url).await()
+                    val result = Network.jobs.getJobs(
+                        locationName = locationName,
+                        page = page,
+                        resultsPerPage = resultPerPage
+                    ).await()
                     val resultParsed = parseJobJsonResult(JSONObject(result), locationName)
                     jobDataBase.jobDao.insertAll(resultParsed.asDatabaseModel())
                     emit(DataState.Success)
@@ -46,13 +47,6 @@ class JobRepository(private val jobDataBase: JobDatabase) {
                 }
             }
         }.flowOn(dispatcher)
-    }
-
-    private fun createUrl(locationName: String, page: String, resultPerPage: String): String {
-        var ret = "search?"
-        if (locationName.isNotEmpty() && locationName != Constants.DEFAULT)
-            ret += "LocationName=$locationName&"
-        return "${ret}Page=$page&ResultsPerPage=$resultPerPage"
     }
 
     suspend fun refreshSubdivision(
@@ -152,7 +146,8 @@ class JobRepository(private val jobDataBase: JobDatabase) {
             val jobCategoryJSONObject = jobCategoryArray.getJSONObject(0)
             val jobCategory = jobCategoryJSONObject.getString("Name")
 
-            val jobQualificationSummary = matchedObjectDescriptorJson.getString("QualificationSummary")
+            val jobQualificationSummary =
+                matchedObjectDescriptorJson.getString("QualificationSummary")
 
             val publicationStartDate = matchedObjectDescriptorJson.getString("PublicationStartDate")
             val applicationCloseDate = matchedObjectDescriptorJson.getString("ApplicationCloseDate")
