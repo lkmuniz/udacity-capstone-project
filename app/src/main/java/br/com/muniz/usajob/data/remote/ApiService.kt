@@ -8,11 +8,11 @@ import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Query
-import retrofit2.http.Url
 
 
 interface ApiService {
@@ -31,7 +31,7 @@ interface ApiService {
         @Query("ResultsPerPage") resultsPerPage: String,
         @Query("Keyword") keyword: String,
         @Query("Fields") fields: String = "min"
-    ): Deferred<String>
+    ): Deferred<JobResult>
 
     @Headers(
         Constants.HEADER_HOST,
@@ -68,7 +68,7 @@ object Network {
         .baseUrl(Constants.BASE_URL)
         .client(client())
         .addConverterFactory(ScalarsConverterFactory.create())
-//        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
         .addCallAdapterFactory(CoroutineCallAdapterFactory())
         .build()
 

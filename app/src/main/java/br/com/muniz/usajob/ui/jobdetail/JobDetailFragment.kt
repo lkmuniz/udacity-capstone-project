@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
 import br.com.muniz.usajob.R
 import br.com.muniz.usajob.base.BaseFragment
 import br.com.muniz.usajob.data.Job
@@ -75,7 +74,7 @@ class JobDetailFragment() : BaseFragment() {
 
     private fun openApplyUrl() {
         val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse(job.applyUri.replace("\"", ""))
+        intent.data = Uri.parse(job.applyUri?.replace("\"", ""))
 
         requireActivity().startActivity(intent)
 

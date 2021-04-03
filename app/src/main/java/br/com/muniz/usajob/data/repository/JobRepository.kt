@@ -4,6 +4,7 @@ import br.com.muniz.usajob.Constants
 import br.com.muniz.usajob.data.Job
 import br.com.muniz.usajob.data.local.JobDatabase
 import br.com.muniz.usajob.data.local.subdivision.Subdivision
+import br.com.muniz.usajob.data.remote.JobResult
 import br.com.muniz.usajob.data.remote.Network
 import br.com.muniz.usajob.utils.DataState
 import br.com.muniz.usajob.utils.asDatabaseModel
@@ -40,7 +41,7 @@ class JobRepository(private val jobDataBase: JobDatabase) {
                         resultsPerPage = resultPerPage,
                         keyword = keyword
                     ).await()
-                    val resultParsed = parseJobJsonResult(JSONObject(result), locationName)
+                    val resultParsed = parseJobJsonResult(result, locationName)
                     jobDataBase.jobDao.insertAll(resultParsed.asDatabaseModel())
                     emit(DataState.Success)
                 } catch (throwable: Throwable) {
@@ -105,87 +106,82 @@ class JobRepository(private val jobDataBase: JobDatabase) {
     }
 
     private fun parseJobJsonResult(
-        jsonResult: JSONObject,
+        jobResult: JobResult,
         locationPrefName: String
     ): List<Job> {
 
         val jobList = ArrayList<Job>()
 
-        val searchResultJson = jsonResult.getJSONObject("SearchResult")
-        val searchResultItems = searchResultJson.getJSONArray("SearchResultItems")
+        jobResult.searchResult?.searchResultItems?.forEach { searchResultItems ->
+            val jobId = searchResultItems.matchedObjectID!!.toLong()
+            val applyUri = searchResultItems.matchedObjectDescriptor?.applyURI?.get(0)
+            val positionLocationArray = searchResultItems.matchedObjectDescriptor?.positionLocation
+            var locationName: String? = ""
+            var countryCode: String? = ""
+            var countrySubDivisionCode: String? = ""
+            var longitude: String? = ""
+            var latitude: String? = ""
+            var skip = 0
+            positionLocationArray?.forEach { posLocation ->
 
-        for (i in 0 until searchResultItems.length()) lit@ {
-            val jobJson = searchResultItems.getJSONObject(i)
+                locationName = verifyNull(posLocation.locationName)
+                countryCode = verifyNull(posLocation.countryCode)
+                countrySubDivisionCode = verifyNull(posLocation.countrySubDivisionCode)
+                longitude = verifyNull(posLocation.longitude.toString())
+                latitude = verifyNull(posLocation.latitude.toString())
 
-            val jobId = jobJson.getLong("MatchedObjectId")
-
-            val matchedObjectDescriptorJson = jobJson.getJSONObject("MatchedObjectDescriptor")
-
-            val applyUri =
-                matchedObjectDescriptorJson.getString("ApplyURI").replace("[", "").replace("]", "")
-                    .replace("\\", "")
-
-            val jobName = matchedObjectDescriptorJson.getString("PositionTitle")
-
-            val positionLocationArray = matchedObjectDescriptorJson.getJSONArray("PositionLocation")
-
-            val positionLocationJSONObject = positionLocationArray.getJSONObject(0)
-
-            val locationName = getStringFromJSON(positionLocationJSONObject, "LocationName")
-
-            val locationCountry = getStringFromJSON(positionLocationJSONObject, "CountryCode")
-
-            val countrySubDivisionCode =
-                getStringFromJSON(positionLocationJSONObject, "CountrySubDivisionCode")
-
-            val longitude = getStringFromJSON(positionLocationJSONObject, "Longitude")
-
-            val latitude = getStringFromJSON(positionLocationJSONObject, "Latitude")
-
-            val organizationName = matchedObjectDescriptorJson.getString("OrganizationName")
-
-            val jobCategoryArray = matchedObjectDescriptorJson.getJSONArray("JobCategory")
-            val jobCategoryJSONObject = jobCategoryArray.getJSONObject(0)
-            val jobCategory = jobCategoryJSONObject.getString("Name")
-
-            val jobQualificationSummary =
-                matchedObjectDescriptorJson.getString("QualificationSummary")
-
-            val publicationStartDate = matchedObjectDescriptorJson.getString("PublicationStartDate")
-            val applicationCloseDate = matchedObjectDescriptorJson.getString("ApplicationCloseDate")
-
-            val jobPositionRemunerationArray =
-                matchedObjectDescriptorJson.getJSONArray("PositionRemuneration")
-            val jobCPositionRemunerationJSONObject = jobPositionRemunerationArray.getJSONObject(0)
-            val jobMinimumRange = jobCPositionRemunerationJSONObject.getString("MinimumRange")
-            val jobMaximumRange = jobCPositionRemunerationJSONObject.getString("MaximumRange")
-            val jobRateIntervalCode =
-                jobCPositionRemunerationJSONObject.getString("RateIntervalCode")
-
-            if ((hasNoPrefLocation(locationPrefName) ||
-                        isPrefLocation(locationName, locationPrefName))
-                && isUnitedStates(locationCountry)
-            ) {
-                val job = Job(
-                    jobId,
-                    applyUri,
-                    locationName,
-                    locationCountry,
-                    countrySubDivisionCode,
-                    longitude,
-                    latitude,
-                    organizationName,
-                    jobName,
-                    jobCategory,
-                    jobQualificationSummary,
-                    publicationStartDate,
-                    applicationCloseDate,
-                    jobMinimumRange,
-                    jobMaximumRange,
-                    jobRateIntervalCode
-                )
-                jobList.add(job)
+                // Check if there is a pref location and if is the right location
+                if (!(hasNoPrefLocation(locationPrefName) ||
+                            isPrefLocation(locationName, locationPrefName))
+                    && isUnitedStates(countryCode)
+                ) {
+                    skip = 1
+                }
             }
+
+            // if there is no location skip to the next job
+            if (skip == 1) return@forEach
+
+            val organizationName = searchResultItems.matchedObjectDescriptor?.organizationName
+            val jobName = searchResultItems.matchedObjectDescriptor?.positionTitle
+            var jobCategory = ""
+            searchResultItems.matchedObjectDescriptor?.jobCategory?.forEach {
+                jobCategory += "${it.name}"
+            }
+
+            val qualificationSummary =
+                searchResultItems.matchedObjectDescriptor?.qualificationSummary
+
+            val publicationStartDate =
+                searchResultItems.matchedObjectDescriptor?.publicationStartDate
+            val applicationCloseDate =
+                searchResultItems.matchedObjectDescriptor?.applicationCloseDate
+            val jobMinimumRange =
+                searchResultItems.matchedObjectDescriptor?.positionRemuneration?.get(0)?.minimumRange
+            val jobMaximumRange =
+                searchResultItems.matchedObjectDescriptor?.positionRemuneration?.get(0)?.maximumRange
+            val jobRateIntervalCode =
+                searchResultItems.matchedObjectDescriptor?.positionRemuneration?.get(0)?.rateIntervalCode
+
+            val job = Job(
+                id = jobId,
+                applyUri = applyUri!!,
+                locationName = locationName!!,
+                country = countryCode!!,
+                countrySubDivisionCode = countrySubDivisionCode!!,
+                longitude = longitude!!,
+                latitude = latitude!!,
+                organizationName = organizationName!!,
+                jobName = jobName!!,
+                jobCategory = jobCategory,
+                jobQualificationSummary = qualificationSummary!!,
+                publicationStartDate = publicationStartDate!!,
+                applicationCloseDate = applicationCloseDate!!,
+                jobMinimumRange = jobMinimumRange!!,
+                jobMaximumRange = jobMaximumRange!!,
+                jobRateIntervalCode = jobRateIntervalCode!!
+            )
+            jobList.add(job)
         }
 
         return jobList
@@ -195,19 +191,19 @@ class JobRepository(private val jobDataBase: JobDatabase) {
         return locationPrefName == Constants.DEFAULT
     }
 
-    private fun isPrefLocation(location: String, locationPrefName: String): Boolean {
-        return location.contains(locationPrefName)
+    private fun isPrefLocation(location: String?, locationPrefName: String): Boolean {
+        if (location != null) {
+            return location.contains(locationPrefName)
+        }
+        return false
     }
 
-    private fun isUnitedStates(locationCountry: String): Boolean {
+    private fun isUnitedStates(locationCountry: String?): Boolean {
         return locationCountry == Constants.COUNTRY_CODE
     }
 
-    private fun getStringFromJSON(objectJSONObject: JSONObject, searchString: String): String {
-        if (objectJSONObject.has(searchString))
-            return objectJSONObject.getString(searchString)
-
-        return ""
+    private fun verifyNull(string: String?): String {
+        return string ?: ""
     }
 
 }
