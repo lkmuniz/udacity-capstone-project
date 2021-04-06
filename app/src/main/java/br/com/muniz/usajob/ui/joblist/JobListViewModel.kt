@@ -34,7 +34,7 @@ class JobListViewModel(
     private fun refreshJobs(keyword: String) {
         viewModelScope.launch {
             val location = getPrefLocation()
-            jobRepository.refreshJobs(
+            jobRepository.refreshRepositoryJobs(
                 locationName = location,
                 keyword = keyword
             ).collect { state ->
@@ -104,8 +104,7 @@ class JobListViewModel(
     fun clearAndRefreshDataBase(keyword: String = "") {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                jobRepository.clearJobRepository()
-                configViewModel(keyword)
+                refreshJobs(keyword)
             }
         }
     }

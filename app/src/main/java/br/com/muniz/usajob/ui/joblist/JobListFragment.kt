@@ -6,7 +6,6 @@ import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.SearchView
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
 import br.com.muniz.usajob.R
 import br.com.muniz.usajob.authentication.AuthenticationActivity
 import br.com.muniz.usajob.base.BaseFragment
@@ -18,7 +17,6 @@ import br.com.muniz.usajob.utils.setDisplayHomeAsUpEnabled
 import br.com.muniz.usajob.utils.setup
 import com.firebase.ui.auth.AuthUI
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * A fragment representing a list of Items.

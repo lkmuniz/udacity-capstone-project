@@ -24,7 +24,7 @@ class JobRepository(private val jobDataBase: JobDatabase) {
 
     val subdivisionList = jobDataBase.subdivisionDao.getAllSubdivision()
 
-    suspend fun refreshJobs(
+    suspend fun refreshRepositoryJobs(
         locationName: String = "",
         keyword: String = "",
         page: String = Constants.PAGE_NUMBER,
@@ -94,7 +94,7 @@ class JobRepository(private val jobDataBase: JobDatabase) {
 
     suspend fun clearAndRefreshDatabase() {
         clearJobRepository()
-        refreshJobs()
+        refreshRepositoryJobs()
     }
 
     private fun parseJobJsonResult(
