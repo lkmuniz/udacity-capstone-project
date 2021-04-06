@@ -39,7 +39,7 @@ interface ApiService {
         Constants.HEADER_AUTHORIZATION_KEY
     )
     @GET("codelist/countrysubdivisions/")
-    fun getSubdivision(): Deferred<String>
+    fun getSubdivision(): Deferred<SubdivisionResult>
 }
 
 private fun client(): OkHttpClient {

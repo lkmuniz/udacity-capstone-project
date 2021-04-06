@@ -23,6 +23,8 @@ object Constants {
     const val RESULT_PER_PAGE = "100"
     const val COUNTRY_CODE = "United States"
 
+    const val DEFAULT_COUNTRY = "US"
+
     // API SERVICE HEADER
     const val HEADER_HOST = "Host: data.usajobs.gov"
     const val HEADER_USER_AGENT = "User-Agent: xxxxx" //TODO FILL WITH YOUR EMAIL

@@ -6,6 +6,7 @@ import br.com.muniz.usajob.data.local.JobDatabase
 import br.com.muniz.usajob.data.local.subdivision.Subdivision
 import br.com.muniz.usajob.data.remote.JobResult
 import br.com.muniz.usajob.data.remote.Network
+import br.com.muniz.usajob.data.remote.SubdivisionResult
 import br.com.muniz.usajob.utils.DataState
 import br.com.muniz.usajob.utils.asDatabaseModel
 import br.com.muniz.usajob.utils.subdivisionAsDatabaseModel
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 import timber.log.Timber
 
 class JobRepository(private val jobDataBase: JobDatabase) {
@@ -60,7 +60,7 @@ class JobRepository(private val jobDataBase: JobDatabase) {
             withContext(dispatcher) {
                 try {
                     val result = Network.jobs.getSubdivision().await()
-                    val resultParsed = parseSubdivisionsJsonResult(JSONObject(result))
+                    val resultParsed = parseSubdivisionsJsonResult(result)
                     jobDataBase.subdivisionDao.insertAll(resultParsed.subdivisionAsDatabaseModel())
                     emit(DataState.Success)
                 } catch (throwable: Throwable) {
@@ -71,26 +71,18 @@ class JobRepository(private val jobDataBase: JobDatabase) {
         }.flowOn(dispatcher)
     }
 
-    private fun parseSubdivisionsJsonResult(jsonObject: JSONObject): List<Subdivision> {
+    private fun parseSubdivisionsJsonResult(subdivisionResult: SubdivisionResult): List<Subdivision> {
         val subdivisionList = ArrayList<Subdivision>()
         // First option of the spinner is Default
         var countrySubdivision = Subdivision(Constants.DEFAULT)
         subdivisionList.add(countrySubdivision)
 
-        val codeListtItems = jsonObject.getJSONArray("CodeList")
-        val searchResultItems = codeListtItems.getJSONObject(0).getJSONArray("ValidValue")
-
-        for (i in 0 until searchResultItems.length()) {
-            val subdivisionJson = searchResultItems.getJSONObject(i)
-            var parentCode = subdivisionJson.getString("ParentCode")
-            if (parentCode == "US") {
-                var subdivisionName = subdivisionJson.getString("Value")
-                if (subdivisionName == "Undefined")
-                    subdivisionName = Constants.DEFAULT
-                countrySubdivision = Subdivision(subdivisionName)
-                subdivisionList.add(countrySubdivision)
+        subdivisionResult.codeList?.forEach { codeList ->
+            codeList.validValue?.forEach { validValue ->
+                if (validValue.parentCode == Constants.DEFAULT_COUNTRY) {
+                    subdivisionList.add(Subdivision(validValue.value.toString()))
+                }
             }
-
         }
 
         return subdivisionList
