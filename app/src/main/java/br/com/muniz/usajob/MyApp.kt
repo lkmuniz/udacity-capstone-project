@@ -2,7 +2,6 @@ package br.com.muniz.usajob
 
 import android.app.Application
 import androidx.work.*
-import br.com.muniz.usajob.data.local.JobDatabase
 import br.com.muniz.usajob.data.local.getDatabase
 import br.com.muniz.usajob.data.repository.JobRepository
 import br.com.muniz.usajob.ui.jobdetail.JobDetailViewModel
@@ -16,6 +15,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import timber.log.Timber
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class MyApp : Application() {
@@ -25,6 +25,13 @@ class MyApp : Application() {
     val appModule = module {
 
         single { JobRepository(getDatabase(this@MyApp)) }
+
+        single {
+            AppExecutors(
+                Executors.newSingleThreadExecutor(),
+                Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1)
+            )
+        }
 
         viewModel {
             JobListViewModel(this@MyApp, get())
